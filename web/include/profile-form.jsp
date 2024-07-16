@@ -15,10 +15,7 @@
                 </div>
 
                 <section>
-<!--                    <a href="#" class="icon-link">
-                        <i class="glyphicon glyphicon-user icon"></i>
-                        <span class="text">Profile</span>
-                    </a>-->
+ 
                     <a href="changepass" class="icon-link">
                         <i class="glyphicon glyphicon-cloud icon"></i>
                         <span class="text">Change password</span>

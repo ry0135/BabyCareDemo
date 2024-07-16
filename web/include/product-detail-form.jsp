@@ -1,5 +1,7 @@
+ 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+ 
 
 <!DOCTYPE html>
 <html>
@@ -242,16 +244,16 @@
                 transform: scale(1.1);
             }
           .fa-star {
-            color: #f5b301;
-            }
+    color: #f5b301;
+}
 
-            .fa-star.half::before {
-                content: '\f089'; /* Unicode for half star in Font Awesome */
-                color: #f5b301;
-                position: absolute;
-                margin-left: -1em;
-                top: 1px;
-            }
+.fa-star.half::before {
+    content: '\f089'; /* Unicode for half star in Font Awesome */
+    color: #f5b301;
+    position: absolute;
+    margin-left: -1em;
+    top: 1px;
+}
 
         </style>
     </head>
@@ -348,22 +350,32 @@
                     <div class="col-md-9">
                         <h1>${brand.brandName}</h1>
                         <p class="stats">Đánh Giá: 125</p>
-                        <p class="stats">Sản Phẩm: ${productCount}</p>
+                        <p class="stats">Sản Phẩm: 87</p>
                         <p class="stats">Tỉ Lệ Phản Hồi: 100%</p>
                         <p class="stats">Thời Gian Phản Hồi: trong vài giờ</p>
                         <p class="stats">Tham Gia: 48 ngày trước</p>
                         <p class="stats">Người Theo Dõi: 688</p>
                     </div>
                     <div class="col-md-2 text-center">
-                        <form action="ViewShopServlet">
-                            <input name="CTVID" type="text" hidden="" value="${brand.CTVID}">
-                            <button class="button">Xem Shop</button>
-                        </form>
-                        
+                        <button class="button">Xem Shop</button>
                         <form action="chat">
                             <input name="CTVID" type="text" hidden="" value="${brand.CTVID}">
-                            <button class="button">Nhắn tin</button>
-                        </form>
+                            <button class="button">Nhắn tin</button>  </form>
+                     <form action="followBrand" method="POST">
+                   <input type="hidden" name="userID" value="${sessionScope.user.userId}">
+
+            <input type="hidden" name="brandID" value="${brand.CTVID    }">
+            <c:choose>
+                <c:when test="${isFollowing}">
+                                       <button type="submit" class="button">Bỏ Theo Dõi</button>
+
+                </c:when>
+                <c:otherwise>
+                                          <button type="submit" class="button">Theo Dõi Shop</button>
+
+                </c:otherwise>
+            </c:choose>
+        </form>
                     </div>
                 </div>
             </div>
@@ -495,3 +507,4 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </body>
 </html>
+    

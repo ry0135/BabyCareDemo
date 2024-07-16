@@ -12,9 +12,7 @@ import javax.servlet.annotation.WebFilter;
     "/ListCustomerPayment",
     "/ListConfirmedServices",
     "/ListServiceCancellation",
-        "/preferential-add.jsp",
-
-    "/preferential-list-manager",})
+        })
 public class EmployeeFilter implements Filter {
 
     @Override

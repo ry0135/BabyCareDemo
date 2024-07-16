@@ -163,6 +163,21 @@ public  static int gettPreferentialSize(){
         }
         return discountCode;
     }
+public static String getDiscountCode(String preferentialId) throws SQLException, ClassNotFoundException {
+    String discountCode = null;
+    try (Connection con = DBConnect.getConnection();
+         PreparedStatement ps = con.prepareStatement("SELECT DiscountCode FROM tblPreferential WHERE PreferentialID = ?")) {
+        ps.setString(1, preferentialId);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            discountCode = rs.getString("DiscountCode");
+        }
+    } catch (SQLException e) {
+        System.err.println("Error fetching discount code: " + e.getMessage());
+        e.printStackTrace();
+    }
+    return discountCode;
+}
 
  public static ArrayList<Preferential> getListPreferential() {
         ArrayList<Preferential> listPreferential = new ArrayList<>();
@@ -271,28 +286,27 @@ public static Preferential checkPreferential(String discountID) throws ClassNotF
 //        double discountPercent = getDiscountPercent(discountID);
 //        System.out.println("Discount Percent: " + discountPercent);
 //   
-//String discountID = "aaaa"; // Giả sử discountID bạn muốn kiểm tra là "PREF001"
-//
-//        try {
-//            Preferential preferential = checkPreferential(discountID);
-//            if (preferential != null) {
-//                System.out.println("Preferential found:");
-//                System.out.println("ID: " + preferential.getPreferential());
-//                System.out.println("Name: " + preferential.getPreferentialName());
-//                System.out.println("Start Day: " + preferential.getStartDay());
-//                System.out.println("End Day: " + preferential.getEndDay());
-//                System.out.println("Quantity: " + preferential.getQuantity());
-//                System.out.println("Rate: " + preferential.getRate());
-//                System.out.println("Description: " + preferential.getPreferentiaDescription());
-//                System.out.println("Image: " + preferential.getPreferentiaImg());
-//                System.out.println("Employee ID: " + preferential.getEmployeeID());
-//            } else {
-//                System.out.println("Preferential not found or cannot be applied.");
-//            }
-//        } catch (ClassNotFoundException e) {
-//            System.err.println("Error: Class not found - " + e.getMessage());
-//        }
-//            ArrayList<Preferential> preferentials = ge
+String discountID = "aaaa"; // Giả sử discountID bạn muốn kiểm tra là "PREF001"
+
+        try {
+            Preferential preferential = checkPreferential(discountID);
+            if (preferential != null) {
+                System.out.println("Preferential found:");
+                System.out.println("ID: " + preferential.getPreferential());
+                System.out.println("Name: " + preferential.getPreferentialName());
+                System.out.println("Start Day: " + preferential.getStartDay());
+                System.out.println("End Day: " + preferential.getEndDay());
+                System.out.println("Quantity: " + preferential.getQuantity());
+                System.out.println("Rate: " + preferential.getRate());
+                System.out.println("Description: " + preferential.getPreferentiaDescription());
+                System.out.println("Image: " + preferential.getPreferentiaImg());
+                System.out.println("Employee ID: " + preferential.getEmployeeID());
+            } else {
+                System.out.println("Preferential not found or cannot be applied.");
+            }
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: Class not found - " + e.getMessage());
+        }
     }
 
    }
