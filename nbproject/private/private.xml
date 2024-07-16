@@ -3,8 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/repository1/PreferentialRepository.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/repository1/ProductRepository.java</file>
+            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/repository1/OrderRepository.java</file>
+            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/web/admin.jsp</file>
+            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/controller/MakeOrderBankServlet.java</file>
+            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/controller/SratisticServlet.java</file>
+            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/repository1/StatisticsResponsitory.java</file>
         </group>
     </open-files>
 </project-private>

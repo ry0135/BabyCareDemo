@@ -601,11 +601,6 @@ public class OrderRepository {
         return addressDelivery;
     }
 
-  
-
-
-    
-
    public String getEmailByOrderId(String billId) {
     String query = "SELECT a.Email " +
                    "FROM tblBill b " +
