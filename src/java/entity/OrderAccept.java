@@ -1,22 +1,33 @@
 package entity;
 
 public class OrderAccept {
-    private String idOrder,username,date,discountId,total,orderStatus;
-    private String address,CTVID;
 
-
+    private String idOrder, username, date, discountId, total, orderStatus;
+    private String address, CTVID;
+    private String totalAmount;
 
     public OrderAccept() {
     }
 
-    public OrderAccept(String idOrder, String username, String date, String discountId, String total, String orderStatus) {
+    public OrderAccept(String idOrder, String username, String date, String discountId, String totalAmount, String orderStatus) {
         this.idOrder = idOrder;
         this.username = username;
         this.date = date;
         this.discountId = discountId;
-        this.total = total;
+        this.totalAmount = totalAmount;
         this.orderStatus = orderStatus;
     }
+   public OrderAccept(String idOrder, String username, String date, String discountId, String orderStatus, String address, String CTVID, String totalAmount) {
+        this.idOrder = idOrder;
+        this.username = username;
+        this.date = date;
+        this.discountId = discountId;
+        this.orderStatus = orderStatus;
+        this.address = address;
+        this.CTVID = CTVID;
+        this.totalAmount = totalAmount;
+    }
+    
 
     public String getIdOrder() {
         return idOrder;
@@ -65,6 +76,7 @@ public class OrderAccept {
     public void setOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus;
     }
+
     public String getAddress() {
         return address;
     }
@@ -81,8 +93,20 @@ public class OrderAccept {
         this.CTVID = employeeID;
     }
 
+    public String getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(String totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
     @Override
     public String toString() {
-        return "OrderAccept{" + "idOrder=" + idOrder + ", username=" + username + ", date=" + date + ", discountId=" + discountId + ", total=" + total + ", orderStatus=" + orderStatus + '}';
+        return "OrderAccept{" + "idOrder=" + idOrder + ", username=" + username + ", date=" + date + ", discountId=" + discountId + ", total=" + total + ", orderStatus=" + orderStatus + ", address=" + address + ", CTVID=" + CTVID + ", totalAmount=" + totalAmount + '}';
     }
+ 
+
+   
+
 }

@@ -9,6 +9,8 @@ package controller;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -37,7 +39,11 @@ public class SucscessfullOrderServlet extends HttpServlet {
             String email = orderRepository.getEmailByOrderId(id);
             UserRepository userRepository = new UserRepository();
             UserRepository.sendCodeToEmailSuccsessOrder(email,id,name);
-            
+        try { 
+            OrderRepository.addRevenueFromOrder(id, user.getUserId());
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(SucscessfullOrderServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
             response.sendRedirect("order-list-paid?thongbao=1");
         
 

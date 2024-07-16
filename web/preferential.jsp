@@ -17,3 +17,6 @@
 </body>
 </html>
 <%@include file="include/footer.jsp" %>
+<c:if test="${not empty message}">
+    <div class="alert alert-info">${message}</div>
+</c:if>

@@ -154,7 +154,12 @@
                                     <c:if test="${sessionScope.user.role == 4 }">
                                         <div class="wallet-section ms-4" style="margin-top: 15px">
                                         <i class="bi bi-wallet wallet-icon"></i>
-                                        <span class="wallet-label">Ví tiền</span>
+                                        <a href="transaction" class="wallet-label"> Ví tiền</a>
+                                         <c:forEach var="transaction" items="${transactions}">
+      
+                <td>${transaction.revenue} vnđ</td>
+              
+        </c:forEach>
                                     </div>
                                 </c:if>
                                 <div class="nav-item dropdown" >

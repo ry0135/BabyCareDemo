@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -52,6 +53,35 @@ public class OrderRepository {
         }
         return null;
     }
+public static void addRevenueFromOrder(String billId, String ctvId) throws ClassNotFoundException {
+    Connection conn = null;
+    PreparedStatement pstmt = null;
+    try {
+        conn = DBConnect.getConnection();
+        // Simplified SQL statement without month and year
+        String query = "UPDATE tblRevenue SET Revenue = Revenue + (SELECT SUM(PriceAtPuchase * AmountProduct) FROM tblOrderDetails WHERE BillID = ?) WHERE CTVID = ?";
+        pstmt = conn.prepareStatement(query);
+        pstmt.setString(1, billId);
+        pstmt.setString(2, ctvId);
+
+        int updated = pstmt.executeUpdate();
+        if (updated > 0) {
+            System.out.println("Revenue updated successfully for Bill ID: " + billId);
+        } else {
+            System.out.println("No revenue records updated, check input values and conditions.");
+        }
+    } catch (SQLException ex) {
+        System.err.println("SQL Error: " + ex.getMessage());
+    } finally {
+        try {
+            if (pstmt != null) pstmt.close();
+            if (conn != null) conn.close();
+        } catch (SQLException ex) {
+            System.err.println("SQL Closing Error: " + ex.getMessage());
+        }
+    }
+}
+
 
 //    public static String createOrder(Cart cart, User user, String CTVID) {
 //        try {
@@ -113,33 +143,33 @@ public class OrderRepository {
         return null;
     }
 
-  public static void createOrderDetail(List<Items> sellerItems, String orderID, double discountPercent, double shippingFee) {
-    try {
-        String query = "insert into tblOrderDetails (BillID, ProductID, AmountProduct, PriceAtPuchase) values (?,?,?,?)";
-        Connection con = DBConnect.getConnection();
-        PreparedStatement stmt = con.prepareStatement(query);
+    public static void createOrderDetail(List<Items> sellerItems, String orderID, double discountPercent, double shippingFee) {
+        try {
+            String query = "insert into tblOrderDetails (BillID, ProductID, AmountProduct, PriceAtPuchase) values (?,?,?,?)";
+            Connection con = DBConnect.getConnection();
+            PreparedStatement stmt = con.prepareStatement(query);
 
-        boolean isFirstItem = true;
+            boolean isFirstItem = true;
 
-        for (Items item : sellerItems) {
-            double discountedPrice = item.getPrice() - (item.getPrice() * discountPercent);
-            if (isFirstItem) {
-                discountedPrice += shippingFee;
+            for (Items item : sellerItems) {
+                double discountedPrice = item.getPrice() - (item.getPrice() * discountPercent);
+                if (isFirstItem) {
+                    discountedPrice += shippingFee;
+                }
+                stmt.setString(1, orderID);
+                stmt.setString(2, item.getProduct().getProductId());
+                stmt.setInt(3, item.getAmount());
+                stmt.setDouble(4, discountedPrice);
+                stmt.addBatch();
+                isFirstItem = false;
             }
-            stmt.setString(1, orderID);
-            stmt.setString(2, item.getProduct().getProductId());
-            stmt.setInt(3, item.getAmount());
-            stmt.setDouble(4, discountedPrice);
-            stmt.addBatch();
-            isFirstItem = false;
+            stmt.executeBatch();
+            con.close(); // Ensure the connection is closed after batch execution
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi method createOrderDetail trong OrderRepository.java");
         }
-        stmt.executeBatch();
-        con.close(); // Ensure the connection is closed after batch execution
-    } catch (Exception e) {
-        e.printStackTrace();
-        System.out.println("Lỗi method createOrderDetail trong OrderRepository.java");
     }
-}
 
 //    public static boolean createOrderDetail(Cart cart, String orderId) {
 //        System.out.println("=>>>>....>>>>>>>>>>>>>>>>>>>>>>>" + orderId);
@@ -361,85 +391,83 @@ public class OrderRepository {
 //
 //        return orders;
 //    }
-    
     public static List<Cart> getOrdersWithDetails(String userId) {
-    List<Cart> orders = new ArrayList<>();
+        List<Cart> orders = new ArrayList<>();
 
-    try (Connection con = DBConnect.getConnection()) {
-        String query = "SELECT b.BillID, b.StatusBill, b.DateCreate, p.Preferential, p.Rate, "
-                + "SUM(od.PriceAtPuchase) AS TotalPrice, "
-                + "od.ProductID, od.AmountProduct, "
-                + "pr.ProductName " // Assuming ProductName is in tblProduct table
-                + "FROM tblBill b "
-                + "LEFT JOIN tblPreferential p ON b.PreferentialID = p.Preferential "
-                + "LEFT JOIN tblOrderDetails od ON b.BillID = od.BillID "
-                + "LEFT JOIN tblProduct pr ON od.ProductID = pr.ProductID " // Join with tblProduct to get ProductName
-                + "WHERE b.CustomerID = ? "
-                + "GROUP BY b.BillID, b.StatusBill, b.DateCreate, p.Preferential, p.Rate, "
-                + "od.ProductID, od.AmountProduct, pr.ProductName";
+        try (Connection con = DBConnect.getConnection()) {
+            String query = "SELECT b.BillID, b.StatusBill, b.DateCreate, p.Preferential, p.Rate, "
+                    + "SUM(od.PriceAtPuchase) AS TotalPrice, "
+                    + "od.ProductID, od.AmountProduct, "
+                    + "pr.ProductName " // Assuming ProductName is in tblProduct table
+                    + "FROM tblBill b "
+                    + "LEFT JOIN tblPreferential p ON b.PreferentialID = p.Preferential "
+                    + "LEFT JOIN tblOrderDetails od ON b.BillID = od.BillID "
+                    + "LEFT JOIN tblProduct pr ON od.ProductID = pr.ProductID " // Join with tblProduct to get ProductName
+                    + "WHERE b.CustomerID = ? "
+                    + "GROUP BY b.BillID, b.StatusBill, b.DateCreate, p.Preferential, p.Rate, "
+                    + "od.ProductID, od.AmountProduct, pr.ProductName";
 
-        PreparedStatement stmt = con.prepareStatement(query);
-        stmt.setString(1, userId);
+            PreparedStatement stmt = con.prepareStatement(query);
+            stmt.setString(1, userId);
 
-        ResultSet rs = stmt.executeQuery();
+            ResultSet rs = stmt.executeQuery();
 
-        while (rs.next()) {
-            String billId = rs.getString("BillID");
+            while (rs.next()) {
+                String billId = rs.getString("BillID");
 
-            Cart existingCart = new Cart();
-            existingCart.setOrderedId(billId);
-            existingCart.setOrderStatus(rs.getString("StatusBill"));
-            existingCart.setDate(rs.getString("DateCreate"));
-            existingCart.setDiscountCode(rs.getString("Preferential"));
-            existingCart.setDiscountPercent(rs.getDouble("Rate"));
-            existingCart.setItems(new ArrayList<>());
+                Cart existingCart = new Cart();
+                existingCart.setOrderedId(billId);
+                existingCart.setOrderStatus(rs.getString("StatusBill"));
+                existingCart.setDate(rs.getString("DateCreate"));
+                existingCart.setDiscountCode(rs.getString("Preferential"));
+                existingCart.setDiscountPercent(rs.getDouble("Rate"));
+                existingCart.setItems(new ArrayList<>());
 
-            boolean canCancel = canCancelOrder(existingCart.getDate());
-            existingCart.setCanCancel(canCancel);
+                boolean canCancel = canCancelOrder(existingCart.getDate());
+                existingCart.setCanCancel(canCancel);
 
-            boolean canRefund = canRefundOrder(existingCart.getDate(), existingCart.getOrderStatus());
-            existingCart.setCanRefund(canRefund);
+                boolean canRefund = canRefundOrder(existingCart.getDate(), existingCart.getOrderStatus());
+                existingCart.setCanRefund(canRefund);
 
-            double totalPrice = rs.getDouble("TotalPrice");
-            existingCart.setTotalPrice(totalPrice);
+                double totalPrice = rs.getDouble("TotalPrice");
+                existingCart.setTotalPrice(totalPrice);
 
-            // Create Items object for each product in the order
-            Items item = new Items();
-            item.setOrderID(billId);
-            item.setAmount(rs.getInt("AmountProduct"));
-            Product product = new Product();
-            product.setProductName(rs.getString("ProductName")); // Assuming ProductName column in tblProduct
-            item.setProduct(product);
+                // Create Items object for each product in the order
+                Items item = new Items();
+                item.setOrderID(billId);
+                item.setAmount(rs.getInt("AmountProduct"));
+                Product product = new Product();
+                product.setProductName(rs.getString("ProductName")); // Assuming ProductName column in tblProduct
+                item.setProduct(product);
 
-            existingCart.getItems().add(item);
+                existingCart.getItems().add(item);
 
-            orders.add(existingCart);
+                orders.add(existingCart);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi trong phương thức getOrdersWithDetails trong OrderRepository.java");
         }
-    } catch (Exception e) {
-        e.printStackTrace();
-        System.out.println("Lỗi trong phương thức getOrdersWithDetails trong OrderRepository.java");
+
+        return orders;
     }
-
-    return orders;
-}
-
 
     private static boolean canRefundOrder(String dateString, String status) {
-    if (status == null || !status.equalsIgnoreCase("đã thanh toán")) {
-        return false;
-    }
+        if (status == null || !status.equalsIgnoreCase("đã thanh toán")) {
+            return false;
+        }
 
-    LocalDateTime orderDateTime;
-    try {
-        orderDateTime = LocalDateTime.parse(dateString, formatterWithTime);
-    } catch (DateTimeParseException e) {
-        orderDateTime = LocalDate.parse(dateString, formatterWithoutTime).atStartOfDay();
-    }
+        LocalDateTime orderDateTime;
+        try {
+            orderDateTime = LocalDateTime.parse(dateString, formatterWithTime);
+        } catch (DateTimeParseException e) {
+            orderDateTime = LocalDate.parse(dateString, formatterWithoutTime).atStartOfDay();
+        }
 
-    LocalDateTime now = LocalDateTime.now();
-    Duration duration = Duration.between(orderDateTime, now);
-    return duration.toHours() < 24;
-}
+        LocalDateTime now = LocalDateTime.now();
+        Duration duration = Duration.between(orderDateTime, now);
+        return duration.toHours() < 24;
+    }
 
     private static boolean canCancelOrder(String dateString) {
         LocalDateTime orderDateTime;
@@ -462,20 +490,20 @@ public class OrderRepository {
         }
         return null;
     }
-    
+
     public static void deleteOrderDetailsByBillID(String billID) {
-    try {
-        String query = "DELETE FROM tblOrderDetails WHERE BillID = ?";
-        Connection con = DBConnect.getConnection();
-        PreparedStatement stmt = con.prepareStatement(query);
-        stmt.setString(1, billID);
-        stmt.executeUpdate();
-        con.close();
-    } catch (Exception e) {
-        e.printStackTrace();
-        System.out.println("Lỗi trong phương thức deleteOrderDetailsByBillID trong OrderRepository.java");
+        try {
+            String query = "DELETE FROM tblOrderDetails WHERE BillID = ?";
+            Connection con = DBConnect.getConnection();
+            PreparedStatement stmt = con.prepareStatement(query);
+            stmt.setString(1, billID);
+            stmt.executeUpdate();
+            con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi trong phương thức deleteOrderDetailsByBillID trong OrderRepository.java");
+        }
     }
-}
 
     public static boolean acceptOrder(String orderId, String CTVID) {
 
@@ -549,37 +577,28 @@ public class OrderRepository {
         return ctvid;
     }
 
+    public String getEmailByOrderId(String billId) {
+        String query = "SELECT a.Email "
+                + "FROM tblBill b "
+                + "JOIN tblAccount a ON b.CustomerID = a.UserID "
+                + "WHERE b.BillID = ?";
+        String email = null;
 
+        try (Connection con = DBConnect.getConnection();
+                PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setString(1, billId);
 
-  
-
-
-    
-
-   public String getEmailByOrderId(String billId) {
-    String query = "SELECT a.Email " +
-                   "FROM tblBill b " +
-                   "JOIN tblAccount a ON b.CustomerID = a.UserID " +
-                   "WHERE b.BillID = ?";
-    String email = null;
-
-    try (Connection con = DBConnect.getConnection();
-         PreparedStatement ps = con.prepareStatement(query)) {
-        ps.setString(1, billId);
-
-        try (ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                email = rs.getString("Email");
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    email = rs.getString("Email");
+                }
             }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException | ClassNotFoundException e) {
-        e.printStackTrace();
+
+        return email;
     }
-
-    return email;
-}
-
-
 
 //    public String getNameByOrderId(String billId) {
 //        String query = "SELECT c.FirstnameCus, c.LastnameCus, a.Email "
@@ -607,100 +626,101 @@ public class OrderRepository {
 //        return fullName;
 //    }
     public static User getUserByProductId(String productId) {
-    User user = null;
+        User user = null;
 
-    try (Connection con = DBConnect.getConnection()) {
-        // Query to get user information from tblProductComment and tblAccount
-        String sql = "SELECT a.UserID, a.Firstname, a.Lastname, a.Address, a.Avatar, a.Phone " +
-                     "FROM tblProductComment pc " +
-                     "JOIN tblAccount a ON pc.UserID = a.UserID " +
-                     "WHERE pc.ProductID = ?";
-        PreparedStatement stmt = con.prepareStatement(sql);
-        stmt.setString(1, productId);
-        ResultSet rs = stmt.executeQuery();
+        try (Connection con = DBConnect.getConnection()) {
+            // Query to get user information from tblProductComment and tblAccount
+            String sql = "SELECT a.UserID, a.Firstname, a.Lastname, a.Address, a.Avatar, a.Phone "
+                    + "FROM tblProductComment pc "
+                    + "JOIN tblAccount a ON pc.UserID = a.UserID "
+                    + "WHERE pc.ProductID = ?";
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setString(1, productId);
+            ResultSet rs = stmt.executeQuery();
 
-        if (rs.next()) {
-            String userId = rs.getString("UserID");
-            String firstName = rs.getString("Firstname");
-            String lastName = rs.getString("Lastname");
-            String address = rs.getString("Address");
-            String avatar = rs.getString("Avatar");
-            String phone = rs.getString("Phone");
-
-            user = new User(userId, firstName, lastName, address, avatar, phone);
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
-        return null;
-    }
-    return user;
-}
-
-   public String getNameByOrderId(String billId) {
-    String query = "SELECT \n" +
-                   "    COALESCE(a.Firstname + ' ' + a.Lastname, '') AS FullName \n" +
-                   "FROM tblBill b \n" +
-                   "LEFT JOIN tblAccount a ON b.UserID = a.UserID \n" +
-                   "WHERE b.BillID = ?";
-    String fullName = null;
-
-    try (Connection con = DBConnect.getConnection();
-         PreparedStatement ps = con.prepareStatement(query)) {
-        ps.setString(1, billId);
-
-        try (ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
-                fullName = rs.getString("FullName");
+                String userId = rs.getString("UserID");
+                String firstName = rs.getString("Firstname");
+                String lastName = rs.getString("Lastname");
+                String address = rs.getString("Address");
+                String avatar = rs.getString("Avatar");
+                String phone = rs.getString("Phone");
+
+                user = new User(userId, firstName, lastName, address, avatar, phone);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
-    } catch (SQLException | ClassNotFoundException e) {
-        e.printStackTrace();
+        return user;
     }
 
-    return fullName;
-}
+    public String getNameByOrderId(String billId) {
+        String query = "SELECT \n"
+                + "    COALESCE(a.Firstname + ' ' + a.Lastname, '') AS FullName \n"
+                + "FROM tblBill b \n"
+                + "LEFT JOIN tblAccount a ON b.UserID = a.UserID \n"
+                + "WHERE b.BillID = ?";
+        String fullName = null;
 
+        try (Connection con = DBConnect.getConnection();
+                PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setString(1, billId);
 
-    public static boolean cancelOrder(String orderId, String CTVID) {
-    Connection con = null;
-    PreparedStatement stmt1 = null;
-
-
-    try {
-        con = DBConnect.getConnection();
-
-        // Update tblBill
-        String query1 = "UPDATE tblBill SET StatusBill = N'Đã hủy', CTVID = ? WHERE BillID = ?";
-        stmt1 = con.prepareStatement(query1);
-        stmt1.setString(1, CTVID);
-        stmt1.setString(2, orderId);
-        stmt1.executeUpdate();
-
-
-    } catch (SQLException e) {
-        System.out.println("SQLException in cancelOrder: " + e.getMessage());
-        e.printStackTrace(); // Optional: This provides more details about the exception.
-        return false;
-    } catch (Exception e) {
-        System.out.println("Exception in cancelOrder: " + e.getMessage());
-        e.printStackTrace(); // Optional: This provides more details about the exception.
-        return false;
-    } finally {
-        // Clean up resources
-        try {
-            if (stmt1 != null) stmt1.close();
-     
-            if (con != null) con.close();
-        } catch (SQLException e) {
-            System.out.println("SQLException while closing resources: " + e.getMessage());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    fullName = rs.getString("FullName");
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+
+        return fullName;
     }
 
-    return true;
-}
+    public static boolean cancelOrder(String orderId, String CTVID) {
+        Connection con = null;
+        PreparedStatement stmt1 = null;
 
-     public static boolean cancelOrderRefund(String orderId) {
+        try {
+            con = DBConnect.getConnection();
+
+            // Update tblBill
+            String query1 = "UPDATE tblBill SET StatusBill = N'Đã hủy', CTVID = ? WHERE BillID = ?";
+            stmt1 = con.prepareStatement(query1);
+            stmt1.setString(1, CTVID);
+            stmt1.setString(2, orderId);
+            stmt1.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("SQLException in cancelOrder: " + e.getMessage());
+            e.printStackTrace(); // Optional: This provides more details about the exception.
+            return false;
+        } catch (Exception e) {
+            System.out.println("Exception in cancelOrder: " + e.getMessage());
+            e.printStackTrace(); // Optional: This provides more details about the exception.
+            return false;
+        } finally {
+            // Clean up resources
+            try {
+                if (stmt1 != null) {
+                    stmt1.close();
+                }
+
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("SQLException while closing resources: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean cancelOrderRefund(String orderId) {
         try {
             Connection con = DBConnect.getConnection();
             String query = "UPDATE tblBill SET StatusBill=N'Đang xử lý hoàn tiền' WHERE BillID=?";
@@ -716,44 +736,46 @@ public class OrderRepository {
         }
     }
 
-   public static boolean cancelOrderForCus(String orderId, String CustomerId) {
-    Connection con = null;
-    PreparedStatement stmt1 = null;
- 
+    public static boolean cancelOrderForCus(String orderId, String CustomerId) {
+        Connection con = null;
+        PreparedStatement stmt1 = null;
 
-    try {
-        con = DBConnect.getConnection();
-
-        // Update tblBill
-        String query1 = "UPDATE tblBill SET StatusBill = N'Đã hủy', CustomerID = ? WHERE BillID = ?";
-        stmt1 = con.prepareStatement(query1);
-        stmt1.setString(1, CustomerId);
-        stmt1.setString(2, orderId);
-        stmt1.executeUpdate();
-
-     
-    } catch (SQLException e) {
-        System.out.println("SQLException in cancelOrderForCus: " + e.getMessage());
-        e.printStackTrace(); // Optional: This provides more details about the exception.
-        return false;
-    } catch (Exception e) {
-        System.out.println("Exception in cancelOrderForCus: " + e.getMessage());
-        e.printStackTrace(); // Optional: This provides more details about the exception.
-        return false;
-    } finally {
-        // Clean up resources
         try {
-            if (stmt1 != null) stmt1.close();
-   
-            if (con != null) con.close();
-        } catch (SQLException e) {
-            System.out.println("SQLException while closing resources: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
+            con = DBConnect.getConnection();
 
-    return true;
-}
+            // Update tblBill
+            String query1 = "UPDATE tblBill SET StatusBill = N'Đã hủy', CustomerID = ? WHERE BillID = ?";
+            stmt1 = con.prepareStatement(query1);
+            stmt1.setString(1, CustomerId);
+            stmt1.setString(2, orderId);
+            stmt1.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("SQLException in cancelOrderForCus: " + e.getMessage());
+            e.printStackTrace(); // Optional: This provides more details about the exception.
+            return false;
+        } catch (Exception e) {
+            System.out.println("Exception in cancelOrderForCus: " + e.getMessage());
+            e.printStackTrace(); // Optional: This provides more details about the exception.
+            return false;
+        } finally {
+            // Clean up resources
+            try {
+                if (stmt1 != null) {
+                    stmt1.close();
+                }
+
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("SQLException while closing resources: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+
+        return true;
+    }
 
     public static boolean updateProductByCancelOrder(String orderId) {
         Connection connection = null;
@@ -846,10 +868,6 @@ public class OrderRepository {
         }
         return true;
     }
-    
-    
-
-    
 
 //    public static ArrayList<OrderAccept> getAllOrder() {
 //        ArrayList<OrderAccept> listOrder;
@@ -996,6 +1014,48 @@ public class OrderRepository {
         }
         return listOrder;
     }
+   public static ArrayList<OrderAccept> getAllOrderMonnyByCTVId(String CTVID) {
+  ArrayList<OrderAccept> listOrder = new ArrayList<>();
+String query = "SELECT b.BillID, b.DateCreate, b.StatusBill, SUM(od.PriceAtPuchase * od.AmountProduct) AS TotalAmount, b.AddressDelivery " +
+               "FROM tblBill b " +
+               "JOIN tblOrderDetails od ON b.BillID = od.BillID " +
+               "WHERE b.CTVID = ? AND b.StatusBill = N'Đã hoàn thành' " +
+               "GROUP BY b.BillID, b.DateCreate, b.StatusBill, b.AddressDelivery " +
+               "ORDER BY b.DateCreate;";
+
+try (Connection con = DBConnect.getConnection();
+     PreparedStatement stmt = con.prepareStatement(query)) {
+    stmt.setString(1, CTVID);
+    ResultSet rs = stmt.executeQuery();
+
+    while (rs.next()) {
+        String orderID = rs.getString("BillID");
+        Date date = rs.getDate("DateCreate");
+        String status = rs.getString("StatusBill");
+        String totalAmount = rs.getString("TotalAmount");
+
+        // Loại bỏ 3 ký tự cuối của totalAmount
+        if (totalAmount.length() > 3) {
+            totalAmount = totalAmount.substring(0, totalAmount.length() - 3);
+        }
+
+        String address = rs.getString("AddressDelivery");
+
+        OrderAccept orderAccept = new OrderAccept(orderID, null, new SimpleDateFormat("yyyy-MM-dd").format(date), null, status, address, CTVID, totalAmount);
+        listOrder.add(orderAccept);
+    }
+} catch (SQLException e) {
+    System.err.println("SQL Error: " + e.getMessage());
+    return null;
+} catch (Exception e) {
+    System.out.println("General Error: " + e.getMessage());
+    e.printStackTrace();
+    return null;
+}
+return listOrder;
+
+}
+
 
     public static ArrayList<OrderAccept> getAllOrderSuccsessByCTVId(String CTVID) {
         ArrayList<OrderAccept> listOrder;
@@ -1234,161 +1294,168 @@ public class OrderRepository {
 //
 //    }
     public static User getUserByBillID(String billID) {
-    User user = null;
-    Connection con = null;
-    PreparedStatement stmt = null;
-    ResultSet rs = null;
+        User user = null;
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
 
-    try {
-        con = DBConnect.getConnection();
-        String query = "SELECT tblAccount.* FROM tblBill " +
-                       "JOIN tblAccount ON tblBill.UserID = tblAccount.UserID " +
-                       "WHERE BillID = ?";
-        stmt = con.prepareStatement(query);
-        stmt.setString(1, billID);
-        rs = stmt.executeQuery();
-        if (rs.next()) {
-            user = new User(
-                rs.getString("UserID"), 
-                rs.getString("Firstname"), 
-                rs.getString("Lastname"), 
-                rs.getString("Address"), 
-                rs.getString("Avatar"), 
-                rs.getString("Phone")
-            );
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
-        System.out.println("==========>ERROR :()<=============");
-        return null;
-    } finally {
         try {
-            if (rs != null) rs.close();
-            if (stmt != null) stmt.close();
-            if (con != null) con.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            con = DBConnect.getConnection();
+            String query = "SELECT tblAccount.* FROM tblBill "
+                    + "JOIN tblAccount ON tblBill.UserID = tblAccount.UserID "
+                    + "WHERE BillID = ?";
+            stmt = con.prepareStatement(query);
+            stmt.setString(1, billID);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                user = new User(
+                        rs.getString("UserID"),
+                        rs.getString("Firstname"),
+                        rs.getString("Lastname"),
+                        rs.getString("Address"),
+                        rs.getString("Avatar"),
+                        rs.getString("Phone")
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("==========>ERROR :()<=============");
+            return null;
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
+        return user;
     }
-    return user;
-}
- 
+
     public static boolean insertOrderRefund(String billID, String userID, int accountNumber, String accountName, String bankName, double refundAmount, String note) {
-    String query = "INSERT INTO tblOrderRefund " +
-                   "(BillID, UserID, AccountNumber, Name, BankName, RefundAmount, RefundDate, RefundStatus, Note) " +
-                   "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO tblOrderRefund "
+                + "(BillID, UserID, AccountNumber, Name, BankName, RefundAmount, RefundDate, RefundStatus, Note) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    try (Connection con = DBConnect.getConnection();
-         PreparedStatement stmt = con.prepareStatement(query)) {
-        
-        stmt.setString(1, billID);
-        stmt.setString(2, userID); 
-        stmt.setInt(3, accountNumber);
-        stmt.setString(4, accountName);
-        stmt.setString(5, bankName); 
-        stmt.setDouble(6, refundAmount);
-        stmt.setDate(7, new java.sql.Date(Calendar.getInstance().getTimeInMillis())); 
-        stmt.setInt(8, 0); // RefundStatus is set to 0 initially
-        stmt.setString(9, note);
+        try (Connection con = DBConnect.getConnection();
+                PreparedStatement stmt = con.prepareStatement(query)) {
 
-        int rowsInserted = stmt.executeUpdate();
-        return rowsInserted > 0; // Return true if at least one row was inserted
+            stmt.setString(1, billID);
+            stmt.setString(2, userID);
+            stmt.setInt(3, accountNumber);
+            stmt.setString(4, accountName);
+            stmt.setString(5, bankName);
+            stmt.setDouble(6, refundAmount);
+            stmt.setDate(7, new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
+            stmt.setInt(8, 0); // RefundStatus is set to 0 initially
+            stmt.setString(9, note);
 
-    } catch (Exception e) {
-        e.printStackTrace();
-        System.out.println("Lỗi trong phương thức insertOrderRefund trong OrderRefundRepository.java");
-        return false; // Return false if there was an exception
-    }
-}
+            int rowsInserted = stmt.executeUpdate();
+            return rowsInserted > 0; // Return true if at least one row was inserted
 
-public static double getTotalPriceByBillID(String billID) {
-    double totalPrice = 0.0;
-    
-    try {
-        String query = "SELECT SUM(AmountProduct * PriceAtPuchase) AS TotalPrice " +
-                       "FROM tblOrderDetails " +
-                       "WHERE BillID = ?";
-        
-        Connection con = DBConnect.getConnection();
-        PreparedStatement stmt = con.prepareStatement(query);
-        stmt.setString(1, billID);
-        
-        ResultSet rs = stmt.executeQuery();
-        
-        if (rs.next()) {
-            totalPrice = rs.getDouble("TotalPrice");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi trong phương thức insertOrderRefund trong OrderRefundRepository.java");
+            return false; // Return false if there was an exception
         }
-        
-        con.close();
-    } catch (Exception e) {
-        e.printStackTrace();
-        System.out.println("Lỗi trong phương thức getTotalPriceByBillID trong OrderDetailsRepository.java");
     }
-    
-    return totalPrice;
-}
 
-   public static List<OrderRefund> getOrderRefund() {
-    List<OrderRefund> orderRefunds = new ArrayList<>();
+    public static double getTotalPriceByBillID(String billID) {
+        double totalPrice = 0.0;
 
-    String query = "SELECT RefundID,  BillID, UserID, AccountNumber, Name, BankName, RefundAmount, RefundDate, RefundStatus, Note " +
-                   "FROM tblOrderRefund " +
-                   "ORDER BY RefundStatus ASC, RefundDate DESC";
+        try {
+            String query = "SELECT SUM(AmountProduct * PriceAtPuchase) AS TotalPrice "
+                    + "FROM tblOrderDetails "
+                    + "WHERE BillID = ?";
 
-    try (Connection con = DBConnect.getConnection();
-         PreparedStatement stmt = con.prepareStatement(query);
-         ResultSet rs = stmt.executeQuery()) {
+            Connection con = DBConnect.getConnection();
+            PreparedStatement stmt = con.prepareStatement(query);
+            stmt.setString(1, billID);
 
-        while (rs.next()) {
-            OrderRefund orderRefund = new OrderRefund();
-            orderRefund.setRefundID(rs.getInt("RefundID"));
-            orderRefund.setBillID(rs.getString("BillID"));
-            orderRefund.setUserID(rs.getString("UserID"));
-            orderRefund.setAccountNumber(rs.getString("AccountNumber"));
-            orderRefund.setName(rs.getString("Name"));
-            orderRefund.setBankName(rs.getString("BankName"));
-            orderRefund.setRefundAmount(rs.getDouble("RefundAmount"));
-            orderRefund.setRefundDate(rs.getDate("RefundDate"));
-            orderRefund.setRefundStatus(rs.getInt("RefundStatus"));
-            orderRefund.setNote(rs.getString("Note"));
+            ResultSet rs = stmt.executeQuery();
 
-            orderRefunds.add(orderRefund);
+            if (rs.next()) {
+                totalPrice = rs.getDouble("TotalPrice");
+            }
+
+            con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi trong phương thức getTotalPriceByBillID trong OrderDetailsRepository.java");
         }
 
-    } catch (SQLException e) {
-        System.err.println("SQLException in getOrderRefunds: " + e.getMessage());
-        e.printStackTrace(); // Optional: This provides more details about the exception.
-    } catch (Exception e) {
-        System.err.println("Exception in getOrderRefunds: " + e.getMessage());
-        e.printStackTrace(); // Optional: This provides more details about the exception.
+        return totalPrice;
     }
 
-    return orderRefunds;
-}
-public static boolean updateRefundStatus(int refundID) {
-    String query = "UPDATE tblOrderRefund SET RefundStatus = 1 WHERE RefundID = ?";
-    int rowsAffected = 0;
+    public static List<OrderRefund> getOrderRefund() {
+        List<OrderRefund> orderRefunds = new ArrayList<>();
 
-    try (Connection con = DBConnect.getConnection();
-         PreparedStatement stmt = con.prepareStatement(query)) {
+        String query = "SELECT RefundID,  BillID, UserID, AccountNumber, Name, BankName, RefundAmount, RefundDate, RefundStatus, Note "
+                + "FROM tblOrderRefund "
+                + "ORDER BY RefundStatus ASC, RefundDate DESC";
 
-        stmt.setInt(1, refundID);
-        rowsAffected = stmt.executeUpdate();
+        try (Connection con = DBConnect.getConnection();
+                PreparedStatement stmt = con.prepareStatement(query);
+                ResultSet rs = stmt.executeQuery()) {
 
-    } catch (SQLException e) {
-        System.err.println("SQLException in updateRefundStatus: " + e.getMessage());
-        e.printStackTrace(); // Optional: This provides more details about the exception.
-        return false;
-    } catch (Exception e) {
-        System.err.println("Exception in updateRefundStatus: " + e.getMessage());
-        e.printStackTrace(); // Optional: This provides more details about the exception.
-        return false;
+            while (rs.next()) {
+                OrderRefund orderRefund = new OrderRefund();
+                orderRefund.setRefundID(rs.getInt("RefundID"));
+                orderRefund.setBillID(rs.getString("BillID"));
+                orderRefund.setUserID(rs.getString("UserID"));
+                orderRefund.setAccountNumber(rs.getString("AccountNumber"));
+                orderRefund.setName(rs.getString("Name"));
+                orderRefund.setBankName(rs.getString("BankName"));
+                orderRefund.setRefundAmount(rs.getDouble("RefundAmount"));
+                orderRefund.setRefundDate(rs.getDate("RefundDate"));
+                orderRefund.setRefundStatus(rs.getInt("RefundStatus"));
+                orderRefund.setNote(rs.getString("Note"));
+
+                orderRefunds.add(orderRefund);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("SQLException in getOrderRefunds: " + e.getMessage());
+            e.printStackTrace(); // Optional: This provides more details about the exception.
+        } catch (Exception e) {
+            System.err.println("Exception in getOrderRefunds: " + e.getMessage());
+            e.printStackTrace(); // Optional: This provides more details about the exception.
+        }
+
+        return orderRefunds;
     }
 
-    return rowsAffected > 0;
-}
+    public static boolean updateRefundStatus(int refundID) {
+        String query = "UPDATE tblOrderRefund SET RefundStatus = 1 WHERE RefundID = ?";
+        int rowsAffected = 0;
 
- public static void sendCodeToEmailOrderRefund(String email, String orderID, String name) {
+        try (Connection con = DBConnect.getConnection();
+                PreparedStatement stmt = con.prepareStatement(query)) {
+
+            stmt.setInt(1, refundID);
+            rowsAffected = stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.err.println("SQLException in updateRefundStatus: " + e.getMessage());
+            e.printStackTrace(); // Optional: This provides more details about the exception.
+            return false;
+        } catch (Exception e) {
+            System.err.println("Exception in updateRefundStatus: " + e.getMessage());
+            e.printStackTrace(); // Optional: This provides more details about the exception.
+            return false;
+        }
+
+        return rowsAffected > 0;
+    }
+
+    public static void sendCodeToEmailOrderRefund(String email, String orderID, String name) {
         if (!isValidEmail(email)) {
             throw new IllegalArgumentException("Invalid email address: " + email);
         }
@@ -1411,232 +1478,50 @@ public static boolean updateRefundStatus(int refundID) {
         });
 
         try {
-                MimeMessage message = new MimeMessage(session);
-                message.setFrom(new InternetAddress(username));
-                message.setRecipients(javax.mail.Message.RecipientType.TO,
-                        InternetAddress.parse(email));
-                message.setSubject("Đơn hàng #" + orderID + " đã được hoàn tiền thành công");
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(username));
+            message.setRecipients(javax.mail.Message.RecipientType.TO,
+                    InternetAddress.parse(email));
+            message.setSubject("Đơn hàng #" + orderID + " đã được hoàn tiền thành công");
 
-                // Set content type as text/plain and UTF-8 encoding
-                message.setContent("Xin chào " + name + "\n\nĐơn hàng #" + orderID + " đã được hoàn tiền thành công", "text/plain; charset=UTF-8");
+            // Set content type as text/plain and UTF-8 encoding
+            message.setContent("Xin chào " + name + "\n\nĐơn hàng #" + orderID + " đã được hoàn tiền thành công", "text/plain; charset=UTF-8");
 
-                Transport.send(message);
-                System.out.println("Code sent successfully.");
-            } catch (MessagingException e) {
-                throw new RuntimeException(e);
-            }
-    }
- public static String getCustomerFullNameByBillID(String billID) {
-    String fullName = "";
-    try {
-        Connection con = DBConnect.getConnection();
-        String query = "SELECT CONCAT(c.firstName, ' ', c.lastName) AS fullName " +
-                       "FROM tblAccount c " +
-                       "JOIN tblBill b ON b.CustomerID = c.UserID " +
-                       "WHERE b.BillID = ?";
-        
-        PreparedStatement stmt = con.prepareStatement(query);
-        stmt.setString(1, billID);
-        ResultSet resultSet = stmt.executeQuery();
-        
-        if (resultSet.next()) {
-            fullName = resultSet.getString("fullName");
+            Transport.send(message);
+            System.out.println("Code sent successfully.");
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
         }
-        con.close();
-    } catch (Exception e) {
-        System.out.println("Error in getCustomerFullNameByBillID method");
-        e.printStackTrace();
     }
-    return fullName;
+
+    public static String getCustomerFullNameByBillID(String billID) {
+        String fullName = "";
+        try {
+            Connection con = DBConnect.getConnection();
+            String query = "SELECT CONCAT(c.firstName, ' ', c.lastName) AS fullName "
+                    + "FROM tblAccount c "
+                    + "JOIN tblBill b ON b.CustomerID = c.UserID "
+                    + "WHERE b.BillID = ?";
+
+            PreparedStatement stmt = con.prepareStatement(query);
+            stmt.setString(1, billID);
+            ResultSet resultSet = stmt.executeQuery();
+
+            if (resultSet.next()) {
+                fullName = resultSet.getString("fullName");
+            }
+            con.close();
+        } catch (Exception e) {
+            System.out.println("Error in getCustomerFullNameByBillID method");
+            e.printStackTrace();
+        }
+        return fullName;
+    }
+public static void main(String[] args) {
+    String CTVID = "01797";  // Example CTV ID, adjust as per your test environment
+    ArrayList<OrderAccept> results = getAllOrderMonnyByCTVId(CTVID);
+    for (OrderAccept order : results) {
+        System.out.println(order);
+    }
 }
-
-    
-
-    public static void main(String[] args) {
-//        String productId = "P9003";
-//
-//        // Appeler la méthode getProductById et afficher les résultats
-//        Product product = getProductById(productId);
-//        if (product != null) {
-//            System.out.println("Product ID: " + product.getProductId());
-//            System.out.println("Product Name: " + product.getProductName());
-//            System.out.println("Product Price: " + product.getProductPrice());
-//        } else {
-//            System.out.println("No product found with Product ID: " + productId);
-//        }
-//
-//        String orderId = "4qbcZKnZbY";
-//
-//        // Appeler la méthode getOrder et afficher les résultats
-//        ArrayList<Items> orderedItems = OrderRepository.getOrder(orderId);
-//        if (orderedItems != null) {
-//            for (Items item : orderedItems) {
-//                System.out.println("Product ID: " + item.getProduct().getProductId());
-//                System.out.println("Product Name: " + item.getProduct().getProductName());
-//                System.out.println("Product Price: " + item.getProduct().getProductPrice());
-//                System.out.println("Amount: " + item.getAmount());
-//                System.out.println();
-//            }
-//        } else {
-//            System.out.println("No items found for Order ID: " + orderId);
-//        }
-//        String billID = "WqjXQDInPn";
-//        User user = getUserByBillID1(billID);
-//        if (user != null) {
-//            System.out.println(user);
-//        } else {
-//            System.out.println("No user found for the given bill ID.");
-//        }
-
-        // Giả lập đối tượng User
-//        User user = new User();
-//        user.setUserId("U8516");
-//        user.setAddress("123 Example St, City");
-//        
-//        // Giả lập đối tượng Product
-//        Product product1 = new Product();
-//        product1.setProductId("P001");
-//        product1.setProductName("Product 1");
-//        product1.setProductPrice(100.0);
-//
-//        Product product2 = new Product();
-//        product2.setProductId("P002");
-//        product2.setProductName("Product 2");
-//        product2.setProductPrice(200.0);
-//
-//        // Giả lập đối tượng Items
-//        Items item1 = new Items();
-//        item1.setProduct(product1);
-//        item1.setAmount(2);
-//
-//        Items item2 = new Items();
-//        item2.setProduct(product2);
-//        item2.setAmount(1);
-//        
-//
-//        List<Items> sellerItems = new ArrayList<>();
-//        sellerItems.add(item1);
-//        sellerItems.add(item2);
-//
-//        // Giả lập CTVID, discountCode, và paymentType
-//        String CTVID = "C7344";
-//        String discountCode = "DISCOUNT10";
-//        int paymentType = 1;  // 0 for COD, 1 for CK
-//
-//        // Gọi phương thức createOrder
-//        String orderID = OrderRepository.createOrder(sellerItems, user, CTVID, discountCode, paymentType);
-//        
-//        if (orderID != null) {
-//            System.out.println("Order created successfully with ID: " + orderID);
-//        } else {
-//            System.out.println("Failed to create order.");
-//        }
-//        ArrayList<OrderAccept> orders = getAllOrderCancel("C3117");
-//        if (orders != null) {
-//            for (OrderAccept order : orders) {
-//                System.out.println(order);
-//            }
-//        } else {
-//            System.out.println("No orders found for the given CTVId.");
-//        }
-////        
-//        boolean result = OrderRepository.acceptOrder1("1uN6Un8I2n", "C7344");
-//        if (result) {
-//            System.out.println("succsess");
-//        }else{
-//            System.out.println("fail");
-//        }
-//String orderId = "R5Gk4HEmfG";
-//        String userId = "U8516";
-//
-//        boolean result = updateProductByCancelOrder(orderId, userId);
-//        if (result) {
-//            System.out.println("Order cancellation and product update were successful.");
-//        } else {
-//            System.out.println("Order cancellation or product update failed.");
-//        }
-//            OrderRepository orderRepository = new OrderRepository();
-//            String email = orderRepository.getNameByOrderId("NGcEugDQXu");
-//                System.out.println("Customer Email: " + email);
-//String orderId = "4rbADFpbd9"; // Thay thế bằng OrderId thực tế của bạn
-//
-//        // Gọi hàm getOrder từ OrderRepository để lấy danh sách các Items trong đơn hàng
-//        ArrayList<Items> orderItems = OrderRepository.getOrder(orderId);
-//
-//        // Kiểm tra và hiển thị thông tin các sản phẩm trong đơn hàng
-//        if (orderItems != null && !orderItems.isEmpty()) {
-//            System.out.println("Thông tin các sản phẩm trong đơn hàng:");
-//            for (Items item : orderItems) {
-//                System.out.println("Sản phẩm: " + item.getProduct().getProductName());
-//                System.out.println("Số lượng: " + item.getAmount());
-//                System.out.println("Ảnh sản phẩm: " + item.getProduct().getImg());
-//                System.out.println("Ảnh sản phẩm: " + item.getProduct().toString());
-//
-//                System.out.println("----------------------------------");
-//            }
-//        } else {
-//            System.out.println("Không tìm thấy đơn hàng hoặc đơn hàng rỗng.");
-//        }
-//        String discountID = "your_discount_id"; // Thay thế bằng ID thực tế
-//        double discountPercent = getDiscountPercent(discountID);
-//        System.out.println("Discount Percent: " + discountPercent);
-//        List<Items> sellerItems = new ArrayList<>();
-//        Product product = ProductRepository.getProductById("P7290");
-//        sellerItems.add(new Items(product, 2));
-//        User user = UserRepository.getUserByProductId("C7138");
-//        // Gọi hàm createOrderDetail với discountPercent
-//        String discountCode = "aaaaa"; // Giảm giá 10%
-//        createOrder(sellerItems, user, "C3117", discountCode, 0);
-//
-//        // Gọi hàm createOrderDetail1 không có giảm giá
-////            createOrderDetail1(sellerItems, orderID);
-//        System.out.println("Đã tạo xong đơn hàng và chi tiết đơn hàng.");
-//        String billId = "rPXDALgSBw"; 
-//
-//        OrderRepository orderRepository = new OrderRepository();
-//        String fullName = orderRepository.getNameByOrderId(billId);
-//
-//        if (fullName != null) {
-//            System.out.println("Full name for order ID " + billId + ": " + fullName);
-//        } else {
-//            System.out.println("No name found for order ID " + billId);
-//        }
-//        
-//String billID = "qKW2h1Whh2"; // Thay thế bằng mã hóa đơn thực tế của bạn
-//        
-//        try {
-//            String ctvid = OrderRepository.getCTVIDByBILLID(billID);
-//            
-//            if (ctvid != null) {
-//                System.out.println("CTVID for bill ID " + billID + ": " + ctvid);
-//            } else {
-//                System.out.println("No CTVID found for bill ID " + billID);
-//            }
-//            
-//        } catch (SQLException | ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        boolean rs = OrderRepository.commentSuccessOrder("cPiyrWj8i5", "C3117");
-//OrderRepository orderRepository = new OrderRepository();
-//String billId = "T2hpeDtKZd"; // Thay thế bằng ID của hóa đơn bạn muốn kiểm tra
-//        
-//        String email = orderRepository.getEmailByOrderId(billId);
-//
-//        if (email != null) {
-//            System.out.println("Email for bill ID " + billId + ": " + email);
-//        } else {
-//            System.out.println("No email found for bill ID " + billId);
-//        }
-// String orderId = "hi2uLvoMI9";  // Thay thế bằng ID thực tế của đơn hàng cần hủy
-//        boolean result = cancelOrderRefund(orderId);
-//        if (result) {
-//            System.out.println("Order refund is being processed for order ID: " + orderId);
-//        } else {
-//            System.out.println("Failed to process order refund for order ID: " + orderId);
-//        }
-    String billID = "6N6AH35MU2"; // Replace with a valid BillID
-        String fullName = getCustomerFullNameByBillID(billID);
-        System.out.println("Full name for BillID " + billID + ": " + fullName);
-    }
-
 }
