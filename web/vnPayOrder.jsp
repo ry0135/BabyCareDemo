@@ -98,6 +98,7 @@
         <div class="table-responsive">
             <form action="submitOrderUrl" id="frmCreateOrder" method="post">
                 <input type="hidden" name="discountCode" value="${discountCode}" />
+                <input type="text" name="newAddress" value="${newAddress}" />
 <!--                <label for="amount">Mã Code: </label>
                 <strong name="discountCode" style="font-size: larger;">${discountCode}</strong>
                 <label for="amount">Mã Code: </label>
@@ -108,7 +109,6 @@
                     <c:if test="${ sessionScope.discountCode == null}">
                       
                        <input class="form-control" data-val="true" data-val-number="The field Amount must be a number." data-val-required="The Amount field is required." id="amount" max="100000000" min="1" name="amount" type="number"  value="${totalPriceAll}" readonly />
-
 
                     </c:if>
                     <c:if test="${ sessionScope.discountCode != null}">

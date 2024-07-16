@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import javax.servlet.http.HttpSession;
 
 @WebServlet(name="ajaxOrderServlet", urlPatterns={"/submitOrderUrl"})
 public class ajaxOrderServlet extends HttpServlet {
@@ -29,12 +30,15 @@ public class ajaxOrderServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        HttpSession session = request.getSession();
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String orderType = "other";
         long amount = Integer.parseInt(request.getParameter("amount"))*100;
         String bankCode = request.getParameter("bankCode");
         String discountCode = request.getParameter("discountCode");
+        String newAddress = (String) session.getAttribute("newAddress");
+        
         
         String vnp_TxnRef = ConfigVnPayOrder.getRandomNumber(8);
         String vnp_IpAddr = ConfigVnPayOrder.getIpAddress(request);

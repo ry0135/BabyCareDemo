@@ -21,7 +21,14 @@
                 <div>
                     <p>${sessionScope.user.firstname} ${sessionScope.user.lastname}</p>
                     <p>Số điện thoại: ${sessionScope.user.phone}</p>
-                    <p>Địa chỉ: ${sessionScope.user.address}</p>
+                     <c:choose>
+                        <c:when test="${not empty Address}">
+                            <p>Địa chỉ: ${Address}</p>
+                        </c:when>
+                        <c:otherwise>
+                            <p>Địa chỉ: ${sessionScope.user.address}</p>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </div>
             <c:forEach var="orderId" items="${orderIds}">

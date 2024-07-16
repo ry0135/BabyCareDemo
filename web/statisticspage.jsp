@@ -42,14 +42,54 @@
                 </div>
             </div>
 
-            <div class="d-flex money m-1">
-                <div style="background-color: rgb(204, 0, 204);" class="icon"><i class=" fa-solid fa-coins"></i>
-                </div>
-                <div class="detail">
-                    <div>${orderRevenue}</div>
-                    <div>Doanh thu bán hàng trong năm nay</div>
-                </div>
+<%
+    // Define the range of years
+    int startYear = 2020; // Starting year
+    int endYear = 2050; // Ending year
+%>
+
+<div class="d-flex money m-1">
+    <form action="Sratistic" method="post">
+        <div style="background-color: rgb(204, 0, 204);" class="icon">
+            <i class="fa-solid fa-coins"></i>
+        </div>
+        <div class="detail">
+            <div>${orderRevenue}</div>
+            <div>Doanh thu bán hàng trong năm nay</div>
+            <div>
+                <label for="month">Chọn tháng:</label>
+                <select id="month" name="month">
+                    <option value="1">Tháng 1</option>
+                    <option value="2">Tháng 2</option>
+                    <option value="3">Tháng 3</option>
+                    <option value="4">Tháng 4</option>
+                    <option value="5">Tháng 5</option>
+                    <option value="6">Tháng 6</option>
+                    <option value="7">Tháng 7</option>
+                    <option value="8">Tháng 8</option>
+                    <option value="9">Tháng 9</option>
+                    <option value="10">Tháng 10</option>
+                    <option value="11">Tháng 11</option>
+                    <option value="12">Tháng 12</option>
+                </select>
             </div>
+            <div>
+                <label for="year">Chọn năm:</label>
+                <select id="year" name="year">
+                    <%
+                        for (int year = startYear; year <= endYear; year++) {
+                            out.println("<option value=\"" + year + "\">" + year + "</option>");
+                        }
+                    %>
+                </select>
+            </div>
+            <button type="submit">Xem thống kê</button>
+        </div>
+    </form>
+                
+                <p>${monthlyRevenue}</p>
+</div>
+
         </div>
     </div>
                     <div class="container mt-3" style="background-color: #f3f3f3">
@@ -87,29 +127,7 @@
 </div>
 </div>
                     
-                    
-<!--<div class="container mt-3">
-    <label for="monthSelect">Chọn tháng:</label>
-    <select id="monthSelect" onchange="updateMonthlyRevenue()">
-        <option value="0">Vui lòng chọn tháng</option>
-        <option value="1">Tháng 1</option>
-        <option value="2">Tháng 2</option>
-        <option value="3">Tháng 3</option>
-        <option value="4">Tháng 4</option>
-        <option value="5">Tháng 5</option>
-        <option value="6">Tháng 6</option>
-        <option value="7">Tháng 7</option>
-        <option value="8">Tháng 8</option>
-        <option value="9">Tháng 9</option>
-        <option value="10">Tháng 10</option>
-        <option value="11">Tháng 11</option>
-        <option value="12">Tháng 12</option>
-    </select>
-</div>
-
-<div id="monthlyRevenue" class="col-md-12 statistical d-flex justify-content-around mb-5">
-     Nội dung được cập nhật qua JavaScript -->
-<!--</div>-->
+                   
 </div>
 
 
@@ -149,76 +167,3 @@
 </style>
 
 
-<!--<script>
-    function updateMonthlyRevenue() {
-        var month = document.getElementById("monthSelect").value;
-        var revenueContent = document.getElementById("monthlyRevenue");
-
-        if (month === "0") {
-            revenueContent.innerHTML = "<p>Vui lòng chọn tháng để hiển thị doanh thu.</p>";
-            return;
-        }
-
-        var revenueForMonth;
-
-        // Sử dụng if-else để xác định doanh thu cho từng tháng
-        if (month === "1") {
-            revenueForMonth = '${order1}';
-        } else if (month === "2") {
-            revenueForMonth = '${order2}';
-        } else if (month === "3") {
-            revenueForMonth = '${order3}';
-        } else if (month === "4") {
-            revenueForMonth = '${order4}';
-        } else if (month === "5") {
-            revenueForMonth = '${order5}';
-        } else if (month === "6") {
-            revenueForMonth = '${order6}';
-        } else if (month === "7") {
-            revenueForMonth = '${order7}';
-        } else if (month === "8") {
-            revenueForMonth = '${order8}';
-        } else if (month === "9") {
-            revenueForMonth = '${order9}';
-        } else if (month === "10") {
-            revenueForMonth = '${order10}';
-        } else if (month === "11") {
-            revenueForMonth = '${order11}';
-        } else if (month === "12") {
-            revenueForMonth = '${order12}';
-        }
-
-        var revenueHtml = '<div class="d-flex money m-1">' +
-            '<div style="background-color: ' + getColorByMonth(month) + ';" class="icon"><i class="fa-solid fa-coins"></i></div>' +
-            '<div class="detail">' +
-            '<div>' + revenueForMonth + '</div>' +
-            '<div>Doanh thu bán hàng trong tháng: ' + month + ' </div>' +
-            '</div></div>';
-
-        revenueContent.innerHTML = revenueHtml;
-    }
-
-    function getColorByMonth(month) {
-        var colors = {
-            "1": "rgb(204, 0, 204)",
-            "2": "rgb(255, 165, 0)",
-            "3": "rgb(0, 128, 0)",
-            "4": "rgb(0, 0, 255)",
-            "5": "rgb(128, 0, 128)",
-            "6": "rgb(255, 0, 0)",
-            "7": "rgb(64, 224, 208)",
-            "8": "rgb(255, 20, 147)",
-            "9": "rgb(0, 206, 209)",
-            "10": "rgb(210, 105, 30)",
-            "11": "rgb(220, 20, 60)",
-            "12": "rgb(0, 0, 139)"
-        };
-        return colors[month];
-    }
-
-    // Khởi tạo ban đầu
-    document.getElementById("monthSelect").value = "0";
-    updateMonthlyRevenue();
-
-</script>
--->

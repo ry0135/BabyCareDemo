@@ -36,7 +36,7 @@ public class MakeOrderServlet extends HttpServlet {
         Cart cart = (Cart) session.getAttribute("cart");
         String userID = user.getUserId();
         String discountCode = request.getParameter("discountCode");  // Lấy mã giảm giá từ session
-        
+        String newAddress = request.getParameter("newAddress");
         if (cart == null || cart.getCart().isEmpty()) {
             response.sendRedirect("cart.jsp");
             return;
@@ -55,7 +55,12 @@ public class MakeOrderServlet extends HttpServlet {
                 List<Items> ctvItems = entry.getValue();
                 System.out.println("Creating order for sellerId: " + sellerId + " with items: " + ctvItems);
 
-                String orderId = OrderRepository.createOrder(ctvItems, user, sellerId, discountCode, cart.getPaymentType());
+                String orderId = null;
+                    if (newAddress != null && !newAddress.isEmpty()) {
+                        orderId = OrderRepository.createOrder(ctvItems, user, sellerId, discountCode, cart.getPaymentType(), newAddress);
+                    } else {
+                        orderId = OrderRepository.createOrder(ctvItems, user, sellerId, discountCode, cart.getPaymentType(), user.getAddress());
+                    }
 
                 if (orderId != null) {
                     orderIds.add(orderId);
@@ -130,6 +135,8 @@ public class MakeOrderServlet extends HttpServlet {
                 CartRepository.removeAllCartItems(userID);
                 session.removeAttribute("cart");
                 System.out.println("Order creation successful. orderItemsMap: " + orderItemsMap + ", orderIds: " + orderIds);
+                request.setAttribute("Address", newAddress);
+
                 request.getRequestDispatcher("ordered.jsp").forward(request, response);
 
             } else {

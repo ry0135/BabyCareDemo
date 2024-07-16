@@ -75,7 +75,7 @@ public class ProductRepository {
         if (productTypeLower.equals("tất cả các mặt hàng dành cho trẻ em")) {
             category = 1;
         } else if (productTypeLower.equals("quần áo trẻ em")) {
-            category = 2;
+            category = 2;   
         } else if (productTypeLower.equals("đồ chơi trẻ em")) {
             category = 3;
         } else if (productTypeLower.equals("tã em bé")) {

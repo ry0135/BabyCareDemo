@@ -251,7 +251,7 @@
                         <div>
                             <p>Tên: ${sessionScope.user.firstname} ${sessionScope.user.lastname}</p>
                             <p>Số điện thoại: ${sessionScope.user.phone}</p>
-                            <p>Địa chỉ: ${sessionScope.user.address}</p>
+                            <p>Địa chỉ: ${address}</p>
                         </div>
                     </div>
                     <div class="border-bottom mt-3">

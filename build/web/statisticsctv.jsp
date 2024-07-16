@@ -8,7 +8,14 @@
             <h1 class="display-5 text-uppercase mb-0">Thống kê bán hàng của ctv </h1>
         </div>
         <div class="col-md-12 statistical d-flex justify-content-around mb-5">
-           
+            <div class="d-flex register m-1">
+                <div style="background-color: orange;" class="icon"><i class="fa-solid fa-person-circle-check"></i>
+                </div>
+                <div class="detail">
+                    <div>${numberPendingOrders}</div>
+                    <div>Tổng đơn hàng đợi xét duyệt</div>
+                </div>
+            </div>
             
                 <div class="d-flex money m-1">
                 <div style="background-color: rgb(204, 0, 204);" class="icon"><i class=" fa-solid fa-coins"></i>

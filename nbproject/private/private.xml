@@ -3,33 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/src/java/controller/ViewShopServlet.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/web/product.jsp</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/web/orderhistory.jsp</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/src/java/repository1/ProductRepository.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/web/include/comfirmation-form.jsp</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/src/java/filter/AuthorizationFilterServlet.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/web/service-detail.jsp</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/web/statisticspage.jsp</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/src/java/controller/Addservice.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/src/java/filter/CTVFilterServlet.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/src/java/controller/GetProductDetailServlet.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/src/java/repository1/OrderRepository.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/src/java/filter/EmployeeFilter.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/src/java/controller/StatusBookingServlet2.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/web/include/product-detail-form.jsp</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/src/java/controller/AddBrandServlet.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/src/java/controller/SratisticServlet.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/web/product-detail.jsp</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/src/java/entity/Cart.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/web/admin.jsp</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/web/include/order-history-form.jsp</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/web/include/viewshop-form.jsp</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/src/java/controller/AddItemServlet.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/src/java/repository1/UserRepository.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/web/include/product-form.jsp</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/src/java/controller/GetOrderHistory.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/SWP/BabyCare3/src/java/repository1/StatisticsResponsitory.java</file>
+            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/repository1/PreferentialRepository.java</file>
+            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/repository1/ProductRepository.java</file>
         </group>
     </open-files>
 </project-private>

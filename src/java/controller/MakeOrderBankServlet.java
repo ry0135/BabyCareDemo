@@ -173,7 +173,9 @@ public class MakeOrderBankServlet extends HttpServlet {
         Cart cart = (Cart) session.getAttribute("cart");
         String discountCode = request.getParameter("discountCode");
         String paymentMethod = request.getParameter("paymentMethod");
-
+        String newAddress = request.getParameter("newAddress");
+        
+        session.setAttribute("newAddress", newAddress);
         
         if (user == null) {
             response.sendRedirect("login.jsp");
@@ -199,6 +201,7 @@ public class MakeOrderBankServlet extends HttpServlet {
         String formattedTotalPriceAllWithDiscount = decimalFormat.format(totalPriceAllWithDiscount);
 
         // Set attributes
+        
          session.setAttribute("typePayment", paymentMethod);
         session.setAttribute("discountCode", discountCode);
         request.setAttribute("totalPrice", formattedTotalPrice);
@@ -207,7 +210,7 @@ public class MakeOrderBankServlet extends HttpServlet {
         request.setAttribute("totalPriceAll", formattedTotalPriceAllWithShipping);
         request.setAttribute("totalPriceAllWithDiscount", formattedTotalPriceAllWithDiscount);
         request.setAttribute("discountPercent", discount * 100);
-        
+       
         // Forward to JSP
         request.getRequestDispatcher("vnPayOrder.jsp").forward(request, response);
     }

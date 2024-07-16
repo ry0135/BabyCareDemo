@@ -38,6 +38,9 @@ public class VnPayReturnOrder extends HttpServlet {
             response.sendRedirect("login.jsp");
             return;
         }
+        
+        String newAddress =(String) session.getAttribute("newAddress");
+        
         Cart cart = (Cart) session.getAttribute("cart");
         String discountCode = (String) session.getAttribute("discountCode");
         String typePayment = (String) session.getAttribute("typePayment");
@@ -74,7 +77,12 @@ public class VnPayReturnOrder extends HttpServlet {
             List<Items> ctvItems = entry.getValue();
             System.out.println("Creating order for sellerId: " + sellerId + " with items: " + ctvItems);
 
-            String orderId = OrderRepository.createOrder(ctvItems, user, sellerId, discountCode, typePaymentInt);
+             String orderId = null;
+                    if (newAddress != null && !newAddress.isEmpty()) {
+                        orderId = OrderRepository.createOrder(ctvItems, user, sellerId, discountCode, cart.getPaymentType(), newAddress);
+                    } else {
+                        orderId = OrderRepository.createOrder(ctvItems, user, sellerId, discountCode, cart.getPaymentType(), user.getAddress());
+                    }
 
             if (orderId != null) {
                 orderIds.add(orderId);
@@ -108,7 +116,8 @@ public class VnPayReturnOrder extends HttpServlet {
                 double totalPrice = calculateTotalPrice(orderItemsMap);
                 double priceWithDiscount = totalPrice * discount;
                 String formattedTotalPrice = decimalFormat.format(totalPrice);
-
+                String Address = OrderRepository.getAddressDeliveryByBillID(orderId);
+                request.setAttribute("Address", Address);
                 session.setAttribute("discountCode", discountCode);
                 request.setAttribute("priceWithDiscount", decimalFormat.format(priceWithDiscount));
                 request.setAttribute("totalPrice", formattedTotalPrice);
@@ -145,6 +154,9 @@ public class VnPayReturnOrder extends HttpServlet {
             session.removeAttribute("discountCode");
             session.removeAttribute("typePayment");
             System.out.println("Order creation successful. orderItemsMap: " + orderItemsMap + ", orderIds: " + orderIds);
+            session.removeAttribute("newAddress");
+            
+
              request.getRequestDispatcher("ordered.jsp").forward(request, response);
 
 

@@ -32,6 +32,9 @@ public class GetOrderedDetailServlet extends HttpServlet {
             response.sendRedirect("login.jsp");
             return;
         }
+        
+        String address = OrderRepository.getAddressDeliveryByBillID(orderId);
+        request.setAttribute("address", address);
 
         // Lấy thông tin đơn hàng
         List<Items> orderItems = OrderRepository.getOrder(orderId);

@@ -211,10 +211,7 @@
                     </li>
                     <li>
                          <a href="listBrand">Danh sách cửa hàng</a>
-                    </li>
-                    <li>
-                         <a href="ManagerRevenueBrand">Doanh thu của cửa hàng</a>
-                    </li>
+                    </li>             
                 </ul>
                 <a href="logout" class="dropdown-item text-danger">Đăng xuất</a>
             </div>

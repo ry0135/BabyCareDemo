@@ -42,11 +42,14 @@ public class StatisticCTVServlet extends HttpServlet {
 
         String CTVID = user.getUserId();
        double orderRevenuectv = StatisticsResponsitory.getOrderRevenuebyCTV(CTVID);
+       int numberPendingOrders = StatisticsResponsitory.getPendingOrdersCountCTV(CTVID);
         DecimalFormat formatter = new DecimalFormat("#,###,###");
         System.out.println(formatter.format(orderRevenuectv));
          ArrayList listProduct = StatisticsResponsitory.getListRankOfProductByCTVID(CTVID);
         request.setAttribute("orderRevenuectv", formatter.format(orderRevenuectv));
           request.setAttribute("listProduct", listProduct);
+         request.setAttribute("numberPendingOrders", numberPendingOrders);
+
          request.getRequestDispatcher("statisticsctv.jsp").forward(request, response);
     }
 

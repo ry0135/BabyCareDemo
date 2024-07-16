@@ -240,6 +240,34 @@
             margin-top: 0;
             padding-top: 0;
         }
+        .Address {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        select, input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        #newAddressInput {
+            display: none;
+        }
     </style>
     <c:if test="${sessionScope.user == null}">
         <% response.sendRedirect("login.jsp");%>
@@ -253,7 +281,7 @@
                         <table class="table table-bordered">
                             <thead class="thead-dark">  
                                 <tr>
-<!--                                    <th>Chọn</th>-->
+                                    <!--                                    <th>Chọn</th>-->
                                     <th>Shop</th>
                                     <th>Sản phẩm</th>
                                     <th>Giá</th>
@@ -265,9 +293,9 @@
                             <tbody class="align-middle">
                                 <c:forEach var="item" items="${itemsList}">
                                     <tr>
-<!--                                        <td>
-                                            <input type="checkbox" name="selectedItems" value="${item.product.productId}" class="checkbox">
-                                        </td>-->
+                                        <!--                                        <td>
+                                                                                    <input type="checkbox" name="selectedItems" value="${item.product.productId}" class="checkbox">
+                                                                                </td>-->
                                         <td>
                                             <p>${item.brandName}</p>
                                         </td>
@@ -367,6 +395,18 @@
                                                 <span class="text-right" style="color: red;">${totalPriceAllWithDiscount}</span>
                                             </div>
                                         </c:if>
+                                        <div class="Address">
+                                                <label for="addressType">Chọn địa chỉ:</label>
+                                                <select name="addressType" id="addressType" onchange="toggleNewAddressInput()">
+                                                    <option value="default">Chọn địa chỉ mặc định</option>
+                                                    <option value="new">Nhập địa chỉ mới</option>
+                                                </select>
+
+                                                <div id="newAddressInput">
+                                                    <label for="newAddress">Địa chỉ mới:</label>
+                                                    <input type="text" id="newAddress" name="newAddress">
+                                                </div>
+                                            </div>
                                         <div class="cart-btn">
                                             <button type="submit">Đặt hàng</button>
                                         </div>
@@ -381,6 +421,16 @@
         </div>
     </div>
 </div>
+<script>
+    document.getElementById("addressType").addEventListener("change", function () {
+        var newAddressInput = document.getElementById("newAddressInput");
+        if (this.value === "new") {
+            newAddressInput.style.display = "block";
+        } else {
+            newAddressInput.style.display = "none";
+        }
+    });
+</script>
 <script>
     function changeFormAction(select) {
         var form = document.getElementById("myForm");

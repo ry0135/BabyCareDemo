@@ -81,37 +81,68 @@ public class OrderRepository {
 //        }
 //        return null;
 //    }
-    public static String createOrder(List<Items> sellerItems, User user, String CTVID, String discountCode, int paymentType) {
-        try {
-            Connection con = DBConnect.getConnection();
-            String query = "insert into tblBill (BillID, CTVID, CustomerID, AddressDelivery, DateCreate, PreferentialID, StatusBill) values (?,?,?,?,?,?,?)";
-            String orderID = getOrderId();
-            PreparedStatement stmt = con.prepareStatement(query);
-            stmt.setString(1, orderID);
-            stmt.setString(2, CTVID);
-            stmt.setString(3, user.getUserId());
-            stmt.setString(4, user.getAddress());
-            stmt.setString(5, Isvalid.getCurrentDateTime());
-            stmt.setString(6, discountCode);
+//    public static String createOrder(List<Items> sellerItems, User user, String CTVID, String discountCode, int paymentType) {
+//        try {
+//            Connection con = DBConnect.getConnection();
+//            String query = "insert into tblBill (BillID, CTVID, CustomerID, AddressDelivery, DateCreate, PreferentialID, StatusBill) values (?,?,?,?,?,?,?)";
+//            String orderID = getOrderId();
+//            PreparedStatement stmt = con.prepareStatement(query);
+//            stmt.setString(1, orderID);
+//            stmt.setString(2, CTVID);
+//            stmt.setString(3, user.getUserId());
+//            stmt.setString(4, user.getAddress());
+//            stmt.setString(5, Isvalid.getCurrentDateTime());
+//            stmt.setString(6, discountCode);
+//
+//            if (paymentType == 0) {
+//                stmt.setString(7, "Đang xử lý-COD");
+//            } else {
+//                stmt.setString(7, "Đã thanh toán");
+//            }
+//
+//            double discountPercent = PreferentialRepository.getDiscountPercent(discountCode);
+//            double shippingFee = 30000; // Fixed shipping fee
+//            stmt.executeUpdate();
+//            createOrderDetail(sellerItems, orderID, discountPercent, shippingFee);  // Pass the shipping fee to createOrderDetail
+//            con.close();
+//            return orderID;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            System.out.println("Lỗi method createOrder(List<Items> sellerItems, User user, String CTVID, String discountCode, int paymentType) trong OrderRepository.java");
+//        }
+//        return null;
+//    }
+    public static String createOrder(List<Items> sellerItems, User user, String CTVID, String discountCode, int paymentType, String address) {
+    try {
+        Connection con = DBConnect.getConnection();
+        String query = "insert into tblBill (BillID, CTVID, CustomerID, AddressDelivery, DateCreate, PreferentialID, StatusBill) values (?,?,?,?,?,?,?)";
+        String orderID = getOrderId();
+        PreparedStatement stmt = con.prepareStatement(query);
+        stmt.setString(1, orderID);
+        stmt.setString(2, CTVID);
+        stmt.setString(3, user.getUserId());
+        stmt.setString(4, address); // Sử dụng address được truyền từ MakeOrderServlet
+        stmt.setString(5, Isvalid.getCurrentDateTime());
+        stmt.setString(6, discountCode);
 
-            if (paymentType == 0) {
-                stmt.setString(7, "Đang xử lý-COD");
-            } else {
-                stmt.setString(7, "Đã thanh toán");
-            }
-
-            double discountPercent = PreferentialRepository.getDiscountPercent(discountCode);
-            double shippingFee = 30000; // Fixed shipping fee
-            stmt.executeUpdate();
-            createOrderDetail(sellerItems, orderID, discountPercent, shippingFee);  // Pass the shipping fee to createOrderDetail
-            con.close();
-            return orderID;
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Lỗi method createOrder(List<Items> sellerItems, User user, String CTVID, String discountCode, int paymentType) trong OrderRepository.java");
+        if (paymentType == 0) {
+            stmt.setString(7, "Đang xử lý-COD");
+        } else {
+            stmt.setString(7, "Đã thanh toán");
         }
-        return null;
+
+        double discountPercent = PreferentialRepository.getDiscountPercent(discountCode);
+        double shippingFee = 30000; // Phí vận chuyển cố định
+        stmt.executeUpdate();
+        createOrderDetail(sellerItems, orderID, discountPercent, shippingFee);  
+        con.close();
+        return orderID;
+    } catch (Exception e) {
+        e.printStackTrace();
+        System.out.println("Lỗi trong method createOrder của OrderRepository.java");
     }
+    return null;
+}
 
   public static void createOrderDetail(List<Items> sellerItems, String orderID, double discountPercent, double shippingFee) {
     try {
@@ -550,6 +581,25 @@ public class OrderRepository {
     }
 
 
+    public static String getAddressDeliveryByBillID(String billId) {
+        String sql = "SELECT AddressDelivery FROM dbo.tblBill WHERE BillID = ?";
+        String addressDelivery = null;
+
+        try (Connection con = DBConnect.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, billId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    addressDelivery = rs.getString("AddressDelivery");
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return addressDelivery;
+    }
 
   
 
@@ -1634,9 +1684,15 @@ public static boolean updateRefundStatus(int refundID) {
 //        } else {
 //            System.out.println("Failed to process order refund for order ID: " + orderId);
 //        }
-    String billID = "6N6AH35MU2"; // Replace with a valid BillID
-        String fullName = getCustomerFullNameByBillID(billID);
-        System.out.println("Full name for BillID " + billID + ": " + fullName);
+String billId = "3NLHmUkEej";
+
+        String addressDelivery = OrderRepository.getAddressDeliveryByBillID(billId);
+
+        if (addressDelivery != null) {
+            System.out.println("Address Delivery for Bill ID " + billId + ": " + addressDelivery);
+        } else {
+            System.out.println("Address Delivery not found for Bill ID " + billId);
+        }
     }
 
 }
