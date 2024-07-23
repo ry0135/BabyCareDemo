@@ -91,6 +91,8 @@
             <p>Admin có thể xem được Danh Sách đăng kí CTV ở đây</p>
             <input class="form-control" id="myInput" type="text" placeholder="Tìm kiếm">
             <br>
+                                            <h3>${message}</h3>
+
             <table class="table table-bordered" id="data-table">
                 <thead>
                     <tr>

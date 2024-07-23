@@ -27,6 +27,139 @@
             </div>
         </div>
     </div>
+                    <div class="container mt-3">
+
+                            <form action="StatisticCTV" method="post">
+                                
+                                <label for="yearRevenue">Doanh thu theo năm</label>
+                              
+                                        <span>${yearRevenue}</span>
+                                <select id="yearRevenue" name="yearRevenue" class="form-select">
+                                    <c:forEach var="year" begin="2020" end="2031">
+                                        <option value="${year}" <c:if test="${year == yearRevenue}">selected</c:if>>${year}</option>
+                                    </c:forEach>
+                                    </select>
+                                  <button type="submit" class="btn btn-primary mt-3">Xem thống kê</button>
+                            </form>                
+                            <div class="container mt-3">
+                                <div class="col-md-12">
+                                    <canvas id="revenueChartYear" width="800" height="400"></canvas>
+                                </div>
+                            </div>
+                            <div class="container mt-3">
+                                 <label for="yearRevenue">Doanh thu theo từng năm</label>
+                            <div class="col-md-12">
+                                <canvas id="revenueChart" width="800" height="400"></canvas>
+                            </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    
+<script>
+    // Lấy dữ liệu từ request attribute
+    var revenue2020 = ${revenue2020};
+    var revenue2021 = ${revenue2021};
+    var revenue2022 = ${revenue2022};
+    var revenue2023 = ${revenue2023};
+    var revenue2024 = ${revenue2024};
+    var revenue2025 = ${revenue2025};
+    var revenue2026 = ${revenue2026};
+    var revenue2027 = ${revenue2027};
+    var revenue2028 = ${revenue2028};
+    var revenue2029 = ${revenue2029};
+    var revenue2030 = ${revenue2030};
+
+    // Biểu đồ doanh thu theo từng năm
+    var ctx = document.getElementById('revenueChart').getContext('2d');
+    var revenueChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['2020', '2021', '2022', '2023', '2024', '2025', '2026', '2027', '2028', '2029', '2030'],
+            datasets: [{
+                label: 'Doanh thu theo từng năm',
+                data: [revenue2020, revenue2021, revenue2022, revenue2023, revenue2024, revenue2025, revenue2026, revenue2027, revenue2028, revenue2029, revenue2030],
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        callback: function(value) {
+                            return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+                        }
+                    }
+                }]
+            },
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem) {
+                        return tooltipItem.yLabel.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+<script>
+    // Lấy dữ liệu từ request attribute
+    var m1 = ${m1};
+    var m2 = ${m2};
+    var m3 = ${m3};
+    var m4 = ${m4};
+    var m5 = ${m5};
+    var m6 = ${m6};
+    var m7 = ${m7};
+    var m8 = ${m8};
+    var m9 = ${m9};
+    var m10 = ${m10};
+    var m11 = ${m11};
+    var m12 = ${m12};
+
+
+    // Biểu đồ doanh thu theo từng năm
+    var ctx = document.getElementById('revenueChartYear').getContext('2d');
+    var revenueChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+            datasets: [{
+                label: 'Doanh thu theo từng năm',
+                data: [m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11,m12],
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        callback: function(value) {
+                            return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+                        }
+                    }
+                }]
+            },
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem) {
+                        return tooltipItem.yLabel.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+                    
+                    
                     <div class="container mt-3" style="background-color: #f3f3f3">
     <h2>Danh sách sản phẩm  bán chạy nhất</h2>
     <p>Đây là danh sách các mặt hàng sản phẩm bán chạy trong nhất</p>

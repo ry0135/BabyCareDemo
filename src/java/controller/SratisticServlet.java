@@ -42,7 +42,7 @@ public class SratisticServlet extends HttpServlet {
         request.setAttribute("numberOfProductLeft", numberOfProductLeft);
         request.setAttribute("orderRevenue", formatter.format(orderRevenue));
         request.setAttribute("listProduct", listProduct);
-        double revenue2020 = StatisticsResponsitory.getOrderRevenueByYear(2020);
+    double revenue2020 = StatisticsResponsitory.getOrderRevenueByYear(2020);
     double revenue2021 = StatisticsResponsitory.getOrderRevenueByYear(2021);
     double revenue2022 = StatisticsResponsitory.getOrderRevenueByYear(2022);
     double revenue2023 = StatisticsResponsitory.getOrderRevenueByYear(2023);
@@ -84,7 +84,7 @@ public class SratisticServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-            String monthParam = request.getParameter("month");
+    String monthParam = request.getParameter("month");
     String yearParam = request.getParameter("year");
     String yearRevenueParam = request.getParameter("yearRevenue");
     int month = (monthParam != null && !monthParam.isEmpty()) ? Integer.parseInt(monthParam) : 1; // Default to 1 if monthParam is null

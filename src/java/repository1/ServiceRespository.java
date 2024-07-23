@@ -10,6 +10,8 @@ import entity.Customer;
 import entity.Booking;
 import entity.CustomerRefund;
 import entity.Feedback;
+import entity.MonthlyRevenue;
+import entity.ServiceType;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -174,6 +176,9 @@ public class ServiceRespository {
         }
         return true;
     }
+
+   
+    
 
     public int insertBooking(Booking booking) {
         int bookingID = -1; // Default value to indicate failure
@@ -416,7 +421,7 @@ public class ServiceRespository {
         try {
             Connection con = DBConnect.getConnection();
             String query = "SELECT B.BookingID, B.CustomerID, B.ServiceID, B.Name, B.PhoneNumber, B.Address, B.Sex, B.BookingDate, "
-                    + "B.Slot, B.BookingStatus, B.Note, B.Price, BS.BillID, BS.BillStatus "
+                    + "B.Slot, B.BookingStatus, B.Note,B.ServiceName, B.Price,B.Email, BS.BillID, BS.BillStatus "
                     + "FROM tblBooking B "
                     + "JOIN tblBillServiec BS ON B.BookingID = BS.BookingID "
                     + "WHERE B.CustomerID = ?";
@@ -436,6 +441,8 @@ public class ServiceRespository {
                 serviceBooked.setSlot(rs.getString("Slot"));
                 serviceBooked.setBookingStatus(rs.getInt("BookingStatus"));
                 serviceBooked.setNote(rs.getString("Note"));
+                serviceBooked.setServiceName(rs.getString("ServiceName"));
+                serviceBooked.setEmail(rs.getString("Email"));
                 serviceBooked.setPrice(rs.getDouble("Price"));
                 serviceBooked.setBillID(rs.getInt("BillID"));
                 serviceBooked.setBillStatus(rs.getInt("BillStatus"));
@@ -967,7 +974,7 @@ public class ServiceRespository {
             stmt.setString(1, feedback.getCustomerID());
             stmt.setInt(2, feedback.getServiceID());
             stmt.setString(3, feedback.getTestimonial());
-            stmt.setDate(4, new java.sql.Date(feedback.getExperienceDate().getTime()));
+            stmt.setDate(4, new java.sql.Date(System.currentTimeMillis()));
             stmt.setInt(5, feedback.getSatisfactionLevel());
             stmt.setString(6, feedback.getName());
 
@@ -1067,37 +1074,41 @@ public class ServiceRespository {
         }
         return feedbackList;
     }
+    
 
-    public static boolean addService(Service service) {
-        Connection con = null;
-        PreparedStatement stmt = null;
+    public static boolean addService(String serviceName, String serviceUrlImg, String description, double servicePrice) throws SQLException, ClassNotFoundException {
+    String sql = "INSERT INTO tblService(servicename, serviceprice, description, serviceimage, TypeID) VALUES (?,?,?,?,?)"; // Chỉnh sửa câu lệnh SQL để có đủ tham số
 
-        try {
-            con = DBConnect.getConnection();
-            stmt = con.prepareStatement("INSERT INTO tblService(servicename, serviceprice, description, serviceimage) VALUES (?,?,?,?)");
-            stmt.setString(1, service.getServiceName());
-            stmt.setString(2, service.getServicePrice());
-            stmt.setString(3, service.getDescription());
-            stmt.setString(4, service.getListImg());
-            stmt.executeUpdate();
-        } catch (Exception e) {
-            System.out.println("Error in addService(Service service)");
-            e.printStackTrace();
-            return false;
-        } finally {
-            try {
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (con != null) {
-                    con.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+    try (Connection con = DBConnect.getConnection();
+         PreparedStatement stmt = con.prepareStatement(sql)) {
+
+        stmt.setString(1, serviceName);
+        stmt.setDouble(2, servicePrice);
+        stmt.setString(3, description);
+        stmt.setString(4, serviceUrlImg);
+        
+        int typeID = 1; // Default value
+        if (serviceName.contains("đầy tháng")) {
+            typeID = 1;
+        } else if (serviceName.contains("thôi nôi")) {
+            typeID = 2;
+        } else if (serviceName.contains("sinh nhật")) {
+            typeID = 3;
         }
-        return true;
+
+        stmt.setInt(5, typeID); // Đảm bảo rằng bạn truyền đủ tham số
+
+        stmt.executeUpdate();
+        System.out.println("Service added successfully.");
+
+    } catch (SQLException e) {
+        System.out.println("Error in addService");
+        e.printStackTrace();
+        return false; // Trả về false nếu có lỗi xảy ra
     }
+    return true;
+}
+
 
     public static HashMap<String, Integer> countServiceBookings() {
         HashMap<String, Integer> serviceCountMap = new HashMap<>();
@@ -1210,6 +1221,7 @@ public class ServiceRespository {
                 customerRefund.setRefundDate(rs.getString("RefundDate"));
                 customerRefund.setRefundStatus(rs.getInt("RefundStatus"));
                 customerRefund.setNote(rs.getString("Note"));
+                customerRefund.setEmail(rs.getString("Email"));
                 customerRefund.setAccountName(rs.getString("AccountName"));
 
                 customerRefunds.add(customerRefund);
@@ -1297,8 +1309,8 @@ public class ServiceRespository {
         PreparedStatement stmt = null;
 
         try {
-            String query = "INSERT INTO tblCustomerRefund (BookingID, CustomerID, Name, ServiceName, AccountNumber, BankName, RefundAmount, RefundDate, RefundStatus, Note, AccountName) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO tblCustomerRefund (BookingID, CustomerID, Name, ServiceName, AccountNumber, BankName, RefundAmount, RefundDate, RefundStatus, Note, AccountName,Email) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
             con = DBConnect.getConnection();
             stmt = con.prepareStatement(query);
 
@@ -1313,6 +1325,7 @@ public class ServiceRespository {
             stmt.setInt(9, customerRefund.getRefundStatus());
             stmt.setString(10, customerRefund.getNote());
             stmt.setString(11, customerRefund.getAccountName());
+            stmt.setString(12, customerRefund.getEmail());
 
             int rowsAffected = stmt.executeUpdate();
             result = rowsAffected > 0;
@@ -1337,42 +1350,229 @@ public class ServiceRespository {
         return result;
     }
 
-  public static int countBookingsForDateAndSlot(String bookingDate, String slot, String serviceID) throws ClassNotFoundException {
-    Connection conn = null;
-    PreparedStatement ps = null;
-    ResultSet rs = null;
-    int count = 0;
+    public static int countBookingsForDateAndSlot(String bookingDate, String slot, String serviceID) throws ClassNotFoundException {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int count = 0;
 
-    try {
-        // Replace with your database connection logic
-        conn = DBConnect.getConnection();
-
-        String query = "SELECT COUNT(*) AS count FROM tblBooking WHERE BookingDate = ? AND Slot = ? AND ServiceID = ?";
-        ps = conn.prepareStatement(query);
-        ps.setString(1, bookingDate);
-        ps.setString(2, slot);
-        ps.setString(3, serviceID);
-        rs = ps.executeQuery();
-
-        if (rs.next()) {
-            count = rs.getInt("count");
-        }
-    } catch (SQLException ex) {
-        // Handle SQL exception
-        ex.printStackTrace();
-    } finally {
-        // Close resources
         try {
-            if (rs != null) rs.close();
-            if (ps != null) ps.close();
-            if (conn != null) conn.close();
+            // Replace with your database connection logic
+            conn = DBConnect.getConnection();
+
+            String query = "SELECT COUNT(*) AS count FROM tblBooking WHERE BookingDate = ? AND Slot = ? AND ServiceID = ?";
+            ps = conn.prepareStatement(query);
+            ps.setString(1, bookingDate);
+            ps.setString(2, slot);
+            ps.setString(3, serviceID);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                count = rs.getInt("count");
+            }
         } catch (SQLException ex) {
+            // Handle SQL exception
             ex.printStackTrace();
+        } finally {
+            // Close resources
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         }
+
+        return count;
     }
 
-    return count;
-}
+    public static ArrayList<ServiceType> getServiceTypeAll() {
+        ArrayList<ServiceType> listService = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM tblServiceType";
+            Connection con = DBConnect.getConnection();
+            PreparedStatement stmt = con.prepareStatement(query);
+            ResultSet results = stmt.executeQuery();
+            while (results.next()) {
+                int Type = results.getInt(1); // Use column names
+                String TypeName = results.getString(2);
+                ServiceType serviceType = new ServiceType(Type, TypeName);
+                listService.add(serviceType);
+            }
+        } catch (Exception e) {
+            System.err.println("Error in database method getServiceType");
+            e.printStackTrace(); // This prints the stack trace to the console
+        }
+        return listService;
+    }
+
+    public static ArrayList<Service> getServiceType(String type) {
+        ArrayList<Service> listService = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM tblService  where TypeID =?";
+            Connection con = DBConnect.getConnection();
+            PreparedStatement stmt = con.prepareStatement(query);
+            stmt.setString(1, type);
+            ResultSet results = stmt.executeQuery();
+            while (results.next()) {
+                int serviceId = results.getInt(1);
+                String serviceName = results.getString(2);
+                double servicePrice = results.getDouble(3);
+                String serviceDescription = results.getString(4);
+                String listImage = results.getString(5);
+
+                int Type = results.getInt(6);
+                Service service = new Service(serviceId, serviceName, servicePrice, listImage, serviceDescription, Type);
+                listService.add(service);
+            }
+        } catch (Exception e) {
+            System.err.println("Error in database method getALLService");
+            e.printStackTrace(); // Optional: This provides more details about the exception.
+        }
+        return listService;
+    }
+
+    public static ArrayList<Service> getSerachService(String txt) {
+        ArrayList<Service> listService = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM tblService WHERE ServiceName LIKE ?";
+            Connection con = DBConnect.getConnection();
+            PreparedStatement stmt = con.prepareStatement(query);
+            stmt.setString(1, "%" + txt + "%"); // Use wildcards for LIKE query
+            ResultSet results = stmt.executeQuery();
+            while (results.next()) {
+                int serviceId = results.getInt(1);
+                String serviceName = results.getString(2);
+                double servicePrice = results.getDouble(3);
+                String serviceDescription = results.getString(4);
+                String listImage = results.getString(5);
+                int type = results.getInt(6);
+
+                Service service = new Service(serviceId, serviceName, servicePrice, listImage, serviceDescription, type);
+                listService.add(service);
+            }
+        } catch (Exception e) {
+            System.err.println("Error in searchServiceByName method");
+            e.printStackTrace();
+        }
+        return listService;
+
+    }
+
+    public static ArrayList<MonthlyRevenue> getMonthlyRevenue(int year) {
+        ArrayList<MonthlyRevenue> monthlyRevenueList = new ArrayList<>();
+        try {
+            Connection con = DBConnect.getConnection();
+            String query = "SELECT MONTH(BS.BillDate) AS Month, SUM(B.Price) AS TotalRevenue "
+                    + "FROM tblBooking B "
+                    + "JOIN tblBillServiec BS ON B.BookingID = BS.BookingID "
+                    + "WHERE BS.BillStatus = 3 AND YEAR(BS.BillDate) = ? "
+                    + "GROUP BY MONTH(BS.BillDate) "
+                    + "ORDER BY MONTH(BS.BillDate);";
+            PreparedStatement stmt = con.prepareStatement(query);
+            stmt.setInt(1, year);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                MonthlyRevenue monthlyRevenue = new MonthlyRevenue();
+                monthlyRevenue.setYear(year); // Set the year for each month
+                monthlyRevenue.setMonth(rs.getInt("Month"));
+                monthlyRevenue.setTotalRevenue(rs.getDouble("TotalRevenue"));
+
+                monthlyRevenueList.add(monthlyRevenue);
+            }
+            con.close();
+        } catch (Exception e) {
+            System.out.println("Error in ServiceRepository.getMonthlyRevenue");
+            e.printStackTrace();
+        }
+        return monthlyRevenueList;
+    }
+
+    public static int getTotalEvaluateForService(String serviceID) throws SQLException, ClassNotFoundException {
+        int totalNumberOfRatings = 0;
+        String query = "SELECT COUNT(*) AS TotalNumberOfRatings FROM feedback WHERE ServiceID = ?";
+
+        try (Connection con = DBConnect.getConnection();
+                PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setString(1, serviceID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    totalNumberOfRatings = rs.getInt("TotalNumberOfRatings");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error in getTotalNumberOfRatingsForService method: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return totalNumberOfRatings;
+    }
+
+    public static double getAverageRatingForService(String serviceID) throws SQLException, ClassNotFoundException {
+        int totalRating = 0;
+        int totalNumberOfRatings = 0;
+        double averageRating = 0.0;
+
+        String totalRatingQuery = "SELECT SUM(satisfaction_level) AS TotalRating FROM feedback WHERE ServiceID = ?";
+        String totalNumberOfRatingsQuery = "SELECT COUNT(*) AS TotalNumberOfRatings FROM feedback WHERE ServiceID = ?";
+
+        try (Connection con = DBConnect.getConnection()) {
+            try (PreparedStatement psTotalRating = con.prepareStatement(totalRatingQuery);
+                    PreparedStatement psTotalNumberOfRatings = con.prepareStatement(totalNumberOfRatingsQuery)) {
+
+                psTotalRating.setString(1, serviceID);
+                psTotalNumberOfRatings.setString(1, serviceID);
+
+                try (ResultSet rsTotalRating = psTotalRating.executeQuery();
+                        ResultSet rsTotalNumberOfRatings = psTotalNumberOfRatings.executeQuery()) {
+
+                    if (rsTotalRating.next()) {
+                        totalRating = rsTotalRating.getInt("TotalRating");
+                    }
+
+                    if (rsTotalNumberOfRatings.next()) {
+                        totalNumberOfRatings = rsTotalNumberOfRatings.getInt("TotalNumberOfRatings");
+                    }
+                }
+            }
+
+            if (totalNumberOfRatings != 0) {
+                averageRating = (double) totalRating / totalNumberOfRatings;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error in getAverageRatingForProduct method: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return averageRating;
+    }
+
+    public static int getTotalRatingForService(String serviceID) throws SQLException, ClassNotFoundException {
+        int totalRating = 0;
+        String query = "  SELECT SUM(satisfaction_level) AS TotalRating FROM feedback WHERE ServiceID = ?";
+
+        try (Connection con = DBConnect.getConnection();
+                PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setString(1, serviceID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    totalRating = rs.getInt("TotalRating");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error in getTotalRatingForProduct method: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return totalRating;
+    }
 
     public static void main(String[] args) {
 //                         Feedback feedback = new Feedback();
@@ -1388,12 +1588,29 @@ public class ServiceRespository {
 //       
 //            saveFeedback(feedback);
 //        System.out.println("Feedback saved successfully!");
-// ArrayList<Booking> services = getAllBookingByCustomerID("U8360");
+//        ArrayList<CustomerRefund> services = (ArrayList<CustomerRefund>) getAllCustomerRefund();
 //
-//        for (Booking service : services) {
+//        for (CustomerRefund service : services) {
 //            System.out.println(service);
 //        }
-//    }
+
+ try {
+            String serviceName = "Dịch vụ sinh nhật tuyệt vời";
+            String serviceUrlImg = "https://example.com/image.jpg";
+            String description = "Dịch vụ tổ chức sinh nhật cho trẻ em";
+            double servicePrice = 200.00;
+
+            boolean isAdded = addService(serviceName, serviceUrlImg, description, servicePrice);
+
+            if (isAdded) {
+                System.out.println("Service added successfully.");
+            } else {
+                System.out.println("Failed to add service.");
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 //   ArrayList<ServiceBooked> services = getAllServiceBookingPayment();
 //
 //        for (ServiceBooked service : services) {
@@ -1499,15 +1716,14 @@ public class ServiceRespository {
 //
 //        }
 //    }
- String bookingDate = "2024-07-17";
-        String slot = "Slot 1 (7:00 - 9:00)";
-        String serviceID = "1"; // Replace with your actual service ID
-
-        try {
-            int count = countBookingsForDateAndSlot(bookingDate, slot, serviceID);
-            System.out.println("Number of bookings for date " + bookingDate + ", slot " + slot + " and service ID " + serviceID + ": " + count);
-        } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
-        }
-}
+// String bookingDate = "2024-07-17";
+//        String slot = "Slot 1 (7:00 - 9:00)";
+//        String serviceID = "1"; // Replace with your actual service ID
+//
+//        try {
+//            int count = countBookingsForDateAndSlot(bookingDate, slot, serviceID);
+//            System.out.println("Number of bookings for date " + bookingDate + ", slot " + slot + " and service ID " + serviceID + ": " + count);
+//        } catch (ClassNotFoundException ex) {
+//            ex.printStackTrace();
+//        }
 }

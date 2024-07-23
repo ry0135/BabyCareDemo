@@ -7,7 +7,18 @@ public class Service {
     private double servicePrice;
     private String description;
     private String listImg;
+    private int type;
+    
+    
 
+    public Service(int serviceID, String serviceName, double servicePrice, String description, String listImg, int type) {
+        this.serviceID = serviceID;
+        this.serviceName = serviceName;
+        this.servicePrice = servicePrice;
+        this.description = description;
+        this.listImg = listImg;
+        this.type = type;
+    }
     public Service() {
     }
 
@@ -19,13 +30,22 @@ public class Service {
         this.listImg = listImg;
     }
 
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+    
+    
     public int getServiceID() {
         return serviceID;
     }
       public DecimalFormat getFormatter() {
         return formatter;
     }
-public void setFormatter(DecimalFormat formatter) {
+    public void setFormatter(DecimalFormat formatter) {
         this.formatter = formatter;
     }
     public void setServiceID(int serviceID) {

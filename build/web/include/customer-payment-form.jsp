@@ -7,8 +7,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <nav class="nav nav-pills nav-justified">
     
-    <a class="nav-item nav-link " href="ListBookingEmploye">Danh Sách khách hàng đặt lịch</a>
-    <a class="nav-item nav-link active" href="ListCustomerPayment">Danh sách  Thanh Toán</a>
+    <!--<a class="nav-item nav-link " href="ListBookingEmploye">Danh Sách khách hàng đặt lịch</a>-->
+    <a class="nav-item nav-link active" href="ListCustomerPayment">Danh Sách khách hàng đặt lịch</a>
      <a class="nav-item nav-link" href="ListConfirmedServices">Danh Sách lịch hoàn thành</a>
    
 </nav>
@@ -21,7 +21,7 @@
         text-align: center; /* Center-align the text */
         text-transform: uppercase; /* Convert text to uppercase */
         letter-spacing: 2px; /* Add some letter spacing */
-        font-weight: bold; /* Make the text bold */">Danh sách  Thanh Toán</h2>
+        font-weight: bold; /* Make the text bold */">Danh Sách khách hàng đặt lịch</h2>
 
 
     <table class="table table-bordered table-striped">

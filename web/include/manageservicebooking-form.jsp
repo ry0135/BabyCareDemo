@@ -1,3 +1,5 @@
+    
+
 <%-- 
     Document   : manageservicebooking-form
     Created on : May 29, 2024, 1:37:38 PM
@@ -42,11 +44,12 @@
         <table class="table table-bordered table-striped table-hover">
             <thead class="thead-dark">
                 <tr>
-                    <th scope="col">Customer ID</th>
-                    <th scope="col">Service ID</th>
+<!--                    <th scope="col">Customer ID</th>-->
+                    <!--<th scope="col">Service ID</th>-->
                     <th scope="col">Dịch vụ</th>
                     <th scope="col">Tên</th>
                     <th scope="col">SĐT</th>
+                    <th scope="col">Email</th>
                     <th scope="col">Địa Chỉ</th>
                     <th scope="col">Sex</th>
                     <th scope="col">Ngày Đặt Lịch</th>
@@ -61,11 +64,12 @@
             <tbody>
                 <c:forEach var="booking" items="${listB}">
                     <tr>
-                        <td>${booking.customerID}</td>
-                        <td>${booking.serviceID}</td>
+                        <!--<td>${booking.customerID}</td>-->
+                        <!--<td>${booking.serviceID}</td>-->
                         <td>${booking.serviceName}</td>
                         <td>${booking.name}</td>
                         <td>${booking.phoneNumber}</td>
+                        <td>${booking.email}</td>
                         <td>${booking.address}</td>
                         <td>${booking.sex}</td>
                         <td>${booking.bookingDate}</td>
@@ -104,13 +108,14 @@
                                     <input type="hidden" name="bookingID" value="${booking.customerID}">
                                     <input type="hidden" name="servicePrice" value="${booking.price}">
                                     <input type="hidden" name="billID" value="${booking.billID}">
-                                     <input type="hidden" name="serviceName" value="${booking.serviceName}">
+                                    <input type="hidden" name="serviceName" value="${booking.serviceName}">
+                                    <input type="hidden" name="t" value="${booking.email}">
                                     
                                     <button type="submit" class="btn btn-danger btn-sm">Hủy</button>
                                 </form>
                             </c:if>
                             
-                            <c:if test="${booking.bookingStatus == 3}">
+                           <c:if test="${booking.bookingStatus == 3}">
                                 <form action="FeedBackServlet" method="get">
                                     
                                     <input type="hidden" name="CustomerID" value="${booking.customerID}">
@@ -122,7 +127,7 @@
                             </c:if>
                         </td>
                         <td>
-                            <c:if test="${booking.bookingStatus == 1 && booking.billStatus == 3}">
+                            <c:if test="${booking.bookingStatus == 2 && booking.billStatus == 3}">
                                 <form action="UpdateBookingServlet" method="get" onsubmit="return canModifyBooking('${booking.bookingDate}', '${booking.slot}');">
                                     <input type="hidden" name="bookingID" value="${booking.bookingID}">
                                     <button type="submit" class="btn btn-success btn-sm">Chỉnh sửa</button>

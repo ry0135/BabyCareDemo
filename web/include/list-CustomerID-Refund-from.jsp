@@ -30,7 +30,7 @@
         <thead class="thead-dark">
             <tr>
 
-                <th>Customer ID</th>
+                <!--<th>Customer ID</th>-->
 
                 <th>Tên</th>
                 <th>Dịch Vụ</th>
@@ -49,7 +49,7 @@
             <c:forEach var="b" items="${listB}">
                 <tr>
 
-                    <td>${b.customerID}</td>
+                    <!--<td>${b.customerID}</td>-->
 
                     <td>${b.name}</td>
                     <td>${b.serviceName}</td>

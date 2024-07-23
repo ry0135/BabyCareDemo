@@ -10,8 +10,8 @@
 
 <nav class="nav nav-pills nav-justified">
 
-    <a class="nav-item nav-link active" href="ListBookingEmploye">Danh Sách khách hàng đặt lịch</a>
-    <a class="nav-item nav-link " href="ListCustomerPayment">Danh sách  Thanh Toán</a>
+<!--    <a class="nav-item nav-link active" href="ListBookingEmploye">Danh Sách khách hàng đặt lịch</a>-->
+    <a class="nav-item nav-link " href="ListCustomerPayment">Danh Sách khách hàng đặt lịch</a>
      <a class="nav-item nav-link " href="ListConfirmedServices">Danh Sách lịch hoàn thành</a>
 
 </nav>

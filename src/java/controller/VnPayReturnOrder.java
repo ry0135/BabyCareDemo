@@ -22,9 +22,11 @@ import javax.servlet.http.HttpSession;
 import repository1.CartRepository;
 import repository1.OrderRepository;
 import repository1.PreferentialRepository;
+import repository1.ProductRepository;
 
 @WebServlet(name="VnPayReturnOrder", urlPatterns={"/VnPayReturnOrder"})
 public class VnPayReturnOrder extends HttpServlet {
+     private static final Logger logger = Logger.getLogger(MakeOrderServlet.class.getName());
        private static final double BASE_SHIPPING_FEE = 30000; // Phí vận chuyển cơ bản
     private static final DecimalFormat decimalFormat = new DecimalFormat("#,##0 VNĐ");
 
@@ -53,6 +55,8 @@ public class VnPayReturnOrder extends HttpServlet {
             System.out.println("Invalid number format for typePayment: " + typePayment);
             // Xử lý lỗi hoặc gán giá trị mặc định cho typePaymentInt nếu cần
         }
+            
+       
         if (user == null) {
             System.out.println("User not logged in.");
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not logged in.");
@@ -79,9 +83,9 @@ public class VnPayReturnOrder extends HttpServlet {
 
              String orderId = null;
                     if (newAddress != null && !newAddress.isEmpty()) {
-                        orderId = OrderRepository.createOrder(ctvItems, user, sellerId, discountCode, cart.getPaymentType(), newAddress);
+                        orderId = OrderRepository.createOrder(ctvItems, user, sellerId, discountCode, typePaymentInt, newAddress);
                     } else {
-                        orderId = OrderRepository.createOrder(ctvItems, user, sellerId, discountCode, cart.getPaymentType(), user.getAddress());
+                        orderId = OrderRepository.createOrder(ctvItems, user, sellerId, discountCode, typePaymentInt, user.getAddress());
                     }
 
             if (orderId != null) {
@@ -96,7 +100,15 @@ public class VnPayReturnOrder extends HttpServlet {
                     orderItemsMap.put(orderId, new ArrayList<>());
                     System.out.println("No items found for order " + orderId);
                 }
-
+                
+                for (Items item : orderItems) {
+                        logger.info("Updating sold for product ID: " + item.getProduct().getProductId() + ", Quantity: " + item.getAmount());
+                        boolean soldUpdated = ProductRepository.updateProductSold(item.getProduct().getProductId(), item.getAmount());
+                        if (!soldUpdated) {
+                            logger.warning("Failed to update sold quantity for product ID: " + item.getProduct().getProductId());
+                        }
+                    }
+                
                 for (Items item : ctvItems) {
                     try {
                         boolean isUpdated = CartRepository.updateProductQuantity(item.getProduct().getProductId(), item.getAmount());

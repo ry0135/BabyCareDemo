@@ -1,4 +1,7 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" %>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,14 +10,12 @@
     <title>Thêm Sản Phẩm</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.6.2/css/bootstrap.min.css">
     <style>
-       body {
+        body {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             height: 100vh;
-            
             justify-content: center;
             align-items: center;
         }
-     
         h2 {
             margin-bottom: 30px;
         }
@@ -37,7 +38,6 @@
             border-color: #0056b3;
         }
     </style>
-
 </head>
 <body>
     <nav class="nav nav-pills nav-justified">
@@ -52,9 +52,9 @@
             <div class="row">
                 <div class="input-field col s6">
                     <div class="input-group">
-                        <input pattern="^.{1,100}$" type="text" class="form-control" id="foodName" placeholder="Tên sản phẩm" name="productName" aria-describedby="inputGroupPrepend" required>
+                        <input pattern="^.{1,150}$" type="text" class="form-control" id="foodName" placeholder="Tên sản phẩm" name="productName" aria-describedby="inputGroupPrepend" required>
                         <div class="invalid-feedback">
-                            Tối đa từ 1-100 ký tự
+                            Tối đa từ 1-150 ký tự
                         </div>
                     </div>
                 </div>
@@ -71,29 +71,26 @@
             </div>
             <div class="row">
                 <div class="input-field col s6">
-                  <div class="input-group">
-                        <select class="form-select" id="productType" name="productType">
-                            <option value="Tất cả các mặt hàng dành cho trẻ em"${product.productType.equals("Tất cả các mặt hàng dành cho trẻ em") ? "selected" : ""}>Tất cả các mặt hàng dành cho trẻ em</option>
-                            <option value="Quần áo trẻ em"${product.productType.equals("Quần áo trẻ em") ? "selected" : ""}>Quần áo trẻ em</option>
-                            <option value="Đồ chơi trẻ em" ${product.productType.equals("Đồ chơi trẻ em") ? "selected" : ""}>Đồ chơi trẻ em</option>
-                            <option value="Tã em bé" ${product.productType.equals("Tã em bé") ? "selected" : ""}>Tã em bé</option>
-                            <option value="Sữa" ${product.productType.equals("Sữa") ? "selected" : ""}>Sữa</option>
-                            <option value="Xe đẩy trẻ em" ${product.productType.equals("Xe đẩy trẻ em") ? "selected" : ""}>Xe đẩy trẻ em</option>
-                            <option value="Nội thất trẻ em" ${product.productType.equals("Nội thất trẻ em") ? "selected" : ""}>Nội thất trẻ em</option>
-                            <option value="Đồ dùng tắm cho bé" ${product.productType.equals("Đồ dùng tắm cho bé") ? "selected" : ""}>Đồ dùng tắm cho bé</option>
-                            <option value="Sách trẻ em" ${product.productType.equals("Sách trẻ em") ? "selected" : ""}>Sách trẻ em</option>
-                            <option value="Đồ dùng ăn uống cho bé" ${product.productType.equals("Đồ dùng ăn uống cho bé") ? "selected" : ""}>Đồ dùng ăn uống cho bé</option>
-                            <option value="Chăm sóc sức khỏe cho bé" ${product.productType.equals("Chăm sóc sức khỏe cho bé") ? "selected" : ""}>Chăm sóc sức khỏe cho bé</option>                           
-                        </select>
-                </div>
-                </div>
+                <div class="input-group">
+                <select class="form-select" id="productType" name="productType" required>
+                    <option value="" disabled selected>Chọn loại sản phẩm</option>
+                    <c:forEach var="c" items="${categories}">
+                        <option value="${c.categoryID}">
+                            ${c.categoryName}
+                        </option>
+                    </c:forEach>
+                </select>
             </div>
+            </div>
+
+            </div>
+
             <div class="row">
                 <div class="input-field col s6">
                     <div class="input-group">
                         <input type="text" pattern="^\d{1,8}(.\d{1,2})?$" class="form-control" id="productAmount" placeholder="Số lượng sản phẩm" name="productAmount" aria-describedby="inputGroupPrepend" required>
                         <div class="invalid-feedback">
-                             Trường này chỉ bao gồm chữ số
+                            Trường này chỉ bao gồm chữ số
                         </div>
                     </div>
                 </div>

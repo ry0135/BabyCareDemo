@@ -53,7 +53,8 @@
                 <td>${preferential.endDay}</td>
                 <td>${preferential.quantity}%</td>
                 <td>${preferential.preferentiaDescription}</td>
-                <td><img style="width: 50%" src="img/${preferential.preferentiaImg}" alt="Image"></td>
+                <td><img style="width: 50%" src="img/discount/${preferential.preferentiaImg}" alt="Image"></td>
+                
                 <td><a class="btn btn-success" href="updatefood?Preferential=${preferential.preferential}">Cập nhật</a></td>
             </tr>
         </c:forEach>

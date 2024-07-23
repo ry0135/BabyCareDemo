@@ -47,15 +47,17 @@
         }
     </style>
 
-  <script>
+
+<script>
     function validateDate() {
-        var bookingDate = document.getElementById("bookingDate").value;
-        var currentDate = new Date();
-        currentDate.setDate(currentDate.getDate()+1); 
-        var minBookingDate = currentDate.toISOString().slice(0, 10); // Convert to YYYY-MM-DD format
-        
-        if (bookingDate < minBookingDate) {
-            alert("Ngày đặt dịch vụ là ngày trong tương lai");
+        const bookingDate = document.getElementById('bookingDate').value;
+        const today = new Date();
+        const selectedDate = new Date(bookingDate);
+        const twoDaysFromNow = new Date();
+        twoDaysFromNow.setDate(today.getDate() + 2);
+
+        if (selectedDate < twoDaysFromNow) {
+            alert('Ngày đặt lịch phải trước ít nhất hai ngày.');
             return false;
         }
         return true;
@@ -66,8 +68,25 @@
     <div class="container mt-5" style=" border-radius: 10px;
             box-shadow: 10px; margin-bottom: 20px;border: 2px solid #ccc;" >
     <h2 style="text-align: center; font-weight: 600; margin-top: 10px">Chỉnh sửa lịch dịch vụ</h2>
+    
+    <% if (request.getAttribute("errorMessage") != null) {%>
+                    <div class="alert alert-danger" role="alert">
+                        <%= request.getAttribute("errorMessage")%>
+                    </div>
+                    <% }%>
+                    
+                    <% if (request.getAttribute("bookedCount") != null) {
+                        int bookedCount = (int) request.getAttribute("bookedCount");
+                        if (bookedCount >= 5) { %>
+                            <div class="alert alert-danger" role="alert">
+                                 <%= request.getParameter("slot") %> của <%= request.getParameter("bookingDate") %> đã bị đầy . Xin vui lòng chọn Slot khác.
+                            </div>
+                    <%    }
+                    } %>
         <form action="UpdateBookingServlet" method="post" onsubmit="return validateDate();">
             <input type="hidden" name="bookingID" value="${booking.bookingID}">
+            <input type="hidden" name="serviceID" value="${booking.serviceID}">
+
             <div class="form-group">
                 <label for="name">Tên</label>
                 <input type="text" class="form-control" name="name" value="${booking.name}" required>
@@ -98,7 +117,7 @@
             </div>
             <div class="form-group">
                 <label for="note">Ghi chú</label>
-                <textarea class="form-control" name="note" required>${booking.note}</textarea>
+                <textarea class="form-control" name="note" >${booking.note}</textarea>
             </div>
             <button style=" margin-top: 10px; margin-bottom: 15px" type="submit" class="btn btn-primary">Cập nhật</button>
         </form>

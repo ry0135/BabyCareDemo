@@ -24,7 +24,6 @@ public class ListBookingCustomerIDServlet extends HttpServlet {
         User oldUser = (User) session.getAttribute("user");
         String customerID = oldUser.getUserId();
         ArrayList<ServiceBooked> list = ServiceRespository.getAllServiceBookingCustomer(customerID);
-       
         request.setAttribute("listB", list);
         
         request.getRequestDispatcher("manageservicebooking.jsp").forward(request, response);

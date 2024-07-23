@@ -47,51 +47,7 @@
             </div>
         </div>
         <div class="container mt-3">
-<!--            <div class="col-md-12 statistical d-flex justify-content-around mb-5" style="margin-top: 10px">
-                <form action="Sratistic" method="post" class="d-flex flex-column align-items-center">
-                    <div class="d-flex money m-1 align-items-center">
-                        <div style="background-color: rgb(204, 0, 204);" class="icon"><i class="fa-solid fa-coins"></i></div>
-                        <div class="detail">
-                            <p>${monthlyRevenue}</p>
-                            <div class="form-group mb-3">
-                               <label for="month"></label>
-                                <select id="month" name="month" class="form-select" >
-                                    <option style="font-size: 14px" value="1">Tháng 1</option>
-                                    <option value="2">Tháng 2</option>
-                                    <option value="3">Tháng 3</option>
-                                    <option value="4">Tháng 4</option>
-                                    <option value="5">Tháng 5</option>
-                                    <option value="6">Tháng 6</option>
-                                    <option value="7">Tháng 7</option>
-                                    <option value="8">Tháng 8</option>
-                                    <option value="9">Tháng 9</option>
-                                    <option value="10">Tháng 10</option>
-                                    <option value="11">Tháng 11</option>
-                                    <option value="12">Tháng 12</option>
-                                </select>
-                            </div>
-                            <div class="form-group mb-3">
-                                <label for="year"></label>
-                                <select id="year" name="year" class="form-select" >
-                                    <option style="font-size: 14px" value="2020">2020</option>
-                                    <option value="2021">2021</option>
-                                    <option value="2022">2022</option>
-                                    <option value="2023">2023</option>
-                                    <option value="2024">2024</option>
-                                    <option value="2025">2025</option>
-                                    <option value="2026">2026</option>
-                                    <option value="2027">2027</option>
-                                    <option value="2028">2028</option>
-                                    <option value="2029">2029</option>
-                                    <option value="2030">2030</option>
-                                    <option value="2031">2031</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary mt-3">Xem thống kê</button>
-                        </div>
-                    </div>
-                </form>
-            </div>-->
+
                             <form action="Sratistic" method="post">
                                 
                                 <label for="yearRevenue">Doanh thu theo năm</label>

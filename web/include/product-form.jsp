@@ -26,6 +26,7 @@
         justify-content: center;
     }
     .product-image {
+        position: relative; /* Đặt vị trí tương đối để chứa thông báo */
         border-bottom: 1px solid #ddd; /* Đường viền ngăn cách */
     }
     .product-image img {
@@ -33,13 +34,34 @@
         height: 120px; /* Đặt chiều cao của hình ảnh để chiếm hết chiều cao của khung */
         object-fit: cover; /* Đảm bảo hình ảnh không bị méo */
     }
+  .out-of-stock {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Màu nền bán trong suốt */
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    opacity: 1; /* Đặt độ mờ 100% để thông báo hiện rõ */
+    z-index: 1; /* Đảm bảo thông báo nằm trên cùng */
+    display: ${product.productAmount == 0 ? 'flex' : 'none'}; /* Ẩn khi không phải hết hàng */
+}
+    .product-item.out-of-stock .out-of-stock {
+        visibility: visible; /* Hiển thị thông báo khi sản phẩm hết hàng */
+    }
     .product-details {
         position: relative;
         display: block;
         text-align: center;
         padding: 10px;
     }
-     .product-name {
+    .product-name {
         font-size: 12px;
         text-align: left;
     }
@@ -140,9 +162,10 @@
             <c:forEach var="product" items="${listProduct}">
                 <div class="col-lg-2 col-md-4 col-sm-6 comment-item" style="margin-top: 12px;">
                     <a href="getProductDetail?id=${product.productId}" class="product-item-link">
-                        <div class="product-item position-relative bg-white d-flex flex-column text-center">
+                        <div class="product-item position-relative bg-white d-flex flex-column text-center ${product.productAmount == 0 ? 'out-of-stock' : ''}">
                             <div class="product-image">
                                 <img class="img-fluid" src="img/${product.img}" alt="">
+                                <div class="out-of-stock" style="display: ${product.productAmount == 0 ? 'flex' : 'none'}; /* Ẩn khi không phải hết hàng */">Hết hàng</div>
                             </div>
                             <div class="product-details">
                                 <h6 class="product-name">${product.productName}</h6>

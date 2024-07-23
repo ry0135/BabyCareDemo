@@ -148,6 +148,50 @@
 
 
 
+ 
+
+<!-- Services End -->
+<div class="row mt-5">
+            <div class="col-12">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <c:forEach var="i" begin="1" end="${numberPage}">
+                            <li class="page-item <c:if test="${i == currentPage}">active</c:if>">
+                                <a class="page-link" href="listService?page=${i}">${i}</a>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+<div class="container-fluid about bg-light py-5">
+                <div class="container py-5">
+                    <div class="row g-5 align-items-center">
+                        <div class="col-lg-5 wow fadeInLeft" data-wow-delay="0.2s">
+                            <div class="about-img pb-5 ps-5">
+                                <img src="images/y/y5.jpg" class="img-fluid rounded w-100" style="object-fit: cover;" alt="Image">
+                                
+                               
+                            </div>
+                        </div>
+                        <div class="col-lg-7 wow fadeInRight" data-wow-delay="0.4s">
+                            <div class="section-title text-start mb-5">
+                                <h4 class="sub-title pe-3 mb-0">About Us</h4>
+                                <h1 class="display-3 mb-4">Chúng tôi luôn sẵn sàng mang lại những dịch vụ tốt nhất cho bạn.</h1>
+                                <p class="mb-4">Babycare là trang thông tin dành cho Bố và Bé, chuyên cung cấp các dịch vụ tiện ích cho em bé. Nhằm giúp cho độc giả có những quyết định tốt trong việc chăm sóc sức khỏe, xây dựng đời sống gia đình và nuôi dạy trẻ tốt hơn</p>
+                                <div class="mb-4">
+                                    <p class="text-secondary"><i class="fa fa-check text-primary me-2"></i> Dịch vụ chuyên nghiệp và nhanh chóng</p>
+                                    <p class="text-secondary"><i class="fa fa-check text-primary me-2"></i> Cung cấp đồ trang trí, nội thất và phụ kiện theo yêu cầu</p>
+                                    <p class="text-secondary"><i class="fa fa-check text-primary me-2"></i> Chi Phí hợp lý </p>
+                                </div>
+                                <a href="#" class="btn btn-primary rounded-pill text-white py-3 px-5">Discover More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         <!-- Footer Start -->
         <div class="container-fluid footer py-5 wow fadeIn" data-wow-delay="0.1s">
             <div class="container py-5">

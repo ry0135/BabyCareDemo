@@ -75,7 +75,7 @@ public class AddProductServlet extends HttpServlet {
         String productImg = filename; // Lưu trữ tên file ảnh vào biến productImg
 
         // Tạo thư mục nếu chưa tồn tại
-        File absoluteDir = new File("D:\\FPT_VNI\\Semester 5\\SWP\\BabyCare3\\web\\img");
+        File absoluteDir = new File("D:\\FPT_VNI\\Semester 5\\BabyCare\\BabyCare4\\web\\img");
         if (!absoluteDir.exists()) {
             absoluteDir.mkdirs();
         }
@@ -86,7 +86,7 @@ public class AddProductServlet extends HttpServlet {
         }
 
         if (filename != null && !filename.isEmpty()) {
-            String absolutePath = "D:\\FPT_VNI\\Semester 5\\SWP\\BabyCare3\\web\\img" + File.separator + filename;
+            String absolutePath = "D:\\FPT_VNI\\Semester 5\\BabyCare\\BabyCare4\\web\\img" + File.separator + filename;
             String relativePath = getServletContext().getRealPath("/") + "img" + File.separator + filename;
 
             // Lưu file vào cả hai vị trí

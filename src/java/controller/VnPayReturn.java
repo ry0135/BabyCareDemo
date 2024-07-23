@@ -65,7 +65,7 @@ public class VnPayReturn extends HttpServlet {
         booking.setSex(sex);
         booking.setSlot(slot);
         booking.setBookingDate(bookingDate);
-        booking.setBookingStatus(1); // Assuming status is 1 for new bookings
+        booking.setBookingStatus(2); // Assuming status is 1 for new bookings
         booking.setNote(note);
         booking.setPrice(servicePrice);
         booking.setEmail(email);

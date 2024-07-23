@@ -1,4 +1,3 @@
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <style>
     /* General form styles */
@@ -93,48 +92,43 @@
         color: #ff0000;
         font-size: 15px; /* Reduced font size */
     }
-
-
 </style>
-<div class=" wow fadeInRight" data-wow-delay="0.4s">
+
+<div class="wow fadeInRight" data-wow-delay="0.4s">
     <div class="appointment-form rounded p-5">
         <p class="fs-4 text-uppercase text-primary"></p>
         <h1 class="display-5 mb-4">Thông Tin Khách Hàng Hoàn Tiền</h1>
-         <h5 class="mb-3"><i class="fa me-2" style="font-size: 24px">Khách hàng:  ${nameUser}</i></h5>
-         <h5 class="mb-3"><i class="fa text-primary" style="font-size: 24px">Số tiền hoàn lại là: ${refundAmount}đ</i></h5>
-        <% if (request.getAttribute("errorMessage") != null) {%>
+        <h5 class="mb-3"><i class="fa me-2" style="font-size: 24px">Khách hàng:  ${nameUser}</i></h5>
+        <h5 class="mb-3"><i class="fa text-primary" style="font-size: 24px">Số tiền hoàn lại là: ${refundAmount}đ</i></h5>
+
+        <% if (request.getAttribute("errorMessage") != null) { %>
         <div class="alert alert-danger" role="alert">
-            <%= request.getAttribute("errorMessage")%>
+            <%= request.getAttribute("errorMessage") %>
         </div>
         <% } %>
 
-        <% if (request.getAttribute("successMessage") != null) {%>
+        <% if (request.getAttribute("successMessage") != null) { %>
         <div class="alert alert-success" role="alert">
-            <%= request.getAttribute("successMessage")%>
+            <%= request.getAttribute("successMessage") %>
         </div>
-        <% }%>
+        <% } %>
 
         <form action="CustomerRefund" method="post">
             <div class="row gy-3 gx-4">
-                <div class="col-md-6 offset-3 mb-3">
-                    <div class="input-group">
-                        <input type="hidden" class="form-control"  name="nameUser" value="${nameUser}" aria-describedby="inputGroupPrepend" required>
-                        <input type="hidden" class="form-control"  name="refundAmount" value="${refundAmount}" aria-describedby="inputGroupPrepend" required>
-                        <input type="hidden" class="form-control"  name="serviceName" value="${serviceName}" aria-describedby="inputGroupPrepend" required>
-                        <input type="hidden" class="form-control"  name="bookingID" value="${bookingID}" aria-describedby="inputGroupPrepend" required>
-                        <input type="hidden" class="form-control"  name="billID" value="${billID}" aria-describedby="inputGroupPrepend" required>
-                        <input type="hidden" class="form-control"  name="customerID" value="${customerID}" aria-describedby="inputGroupPrepend" required>
-                    </div>
-                 
-
-
+                <div class="col-12">
+                    <input type="hidden" class="form-control" name="nameUser" value="${nameUser}" required>
+                    <input type="hidden" class="form-control" name="refundAmount" value="${refundAmount}" required>
+                    <input type="hidden" class="form-control" name="serviceName" value="${serviceName}" required>
+                    <input type="hidden" class="form-control" name="bookingID" value="${bookingID}" required>
+                    <input type="hidden" class="form-control" name="billID" value="${billID}" required>
+                    <input type="hidden" class="form-control" name="customerID" value="${customerID}" required>
+                    <input type="hidden" class="form-control" name="email" value="${t}" required>
                 </div>
-                <div class="col-xl-6">
-                    <input type="text" class="form-control py-3 border-primary bg-transparent text-dark" style="width: 500px" placeholder="Tên Tài Khoản" name="accountName" required>
+                <div class="col-12">
+                    <input type="text" class="form-control py-3 border-primary bg-transparent text-dark" placeholder="Tên Tài Khoản" name="accountName" required>
                 </div>
-                <div class="col-xl-6">
-                    <!--<input type="text" class="form-control py-3 border-primary bg-transparent text-dark" placeholder="Tên Ngân Hàng" name="bankName" required>-->
-                    <select class="form-control py-3 border-primary bg-transparent text-dark" style="width: 500px" name="bankName">
+                <div class="col-12">
+                    <select class="form-control py-3 border-primary bg-transparent text-dark" name="bankName">
                         <option value="Vietcombank">Ngân hàng Thương mại Cổ phần Ngoại thương Việt Nam (Vietcombank)</option>
                         <option value="Vietinbank">Ngân hàng Thương mại Cổ phần Công Thương Việt Nam (Vietinbank)</option>
                         <option value="BIDV">Ngân hàng Thương mại Cổ phần Đầu tư và Phát triển Việt Nam (BIDV)</option>
@@ -150,16 +144,14 @@
                         <option value="BacABank">Ngân hàng Thương mại Cổ phần Bắc Á (BacABank)</option>
                         <option value="OCB">Ngân hàng Thương mại Cổ phần Phương Đông (OCB)</option>
                         <option value="Sacombank">Ngân hàng Thương mại Cổ phần Sài Gòn Thương Tín (Sacombank)</option>
-                      </select>
+                    </select>
                 </div>
-                <div class="col-xl-6">
-                    <input type="text" class="form-control py-3 border-primary bg-transparent text-dark" style="width: 500px" placeholder="Số Thẻ" name="accountNumber" >
-                    <
-                </div>
-                <div class="col-xl-6"></div>
                 <div class="col-12">
-                   
-                    <select name="note" class="form-control py-3 border-primary bg-transparent text-dark" style="width: 500px">
+                    <input type="text" class="form-control py-3 border-primary bg-transparent text-dark" placeholder="Số Thẻ" name="accountNumber" maxlength="15" required>
+                    <div class="invalid-feedback">Số tài tài khoản sẽ dao động từ 8 - 15 ký tự. Bạn kiểm tra lại số tài khoản</div>
+                </div>
+                <div class="col-12">
+                    <select name="note" class="form-control py-3 border-primary bg-transparent text-dark">
                         <option value="Chất lượng dịch vụ kém">Chất lượng dịch vụ kém</option>
                         <option value="Thiếu giám sát">Thiếu giám sát</option>
                         <option value="Thực phẩm không an toàn">Thực phẩm không an toàn</option>
@@ -167,11 +159,10 @@
                         <option value="Lịch trình không phù hợp">Lịch trình không phù hợp</option>
                         <option value="Không cung cấp dịch vụ đã cam kết">Không cung cấp dịch vụ đã cam kết</option>
                         <option value="Phản hồi chậm hoặc thiếu sót">Phản hồi chậm hoặc thiếu sót</option>
-                        <option value="Lý do khác!">Lý do khác !</option>
-
+                        <option value="Lý do khác!">Lý do khác!</option>
                     </select>
                 </div>
-                <div class="col-12">
+                <div class="col-12 ">
                     <button type="submit" class="btn btn-primary text-white w-100 py-3 px-5">Gửi</button>
                 </div>
             </div>

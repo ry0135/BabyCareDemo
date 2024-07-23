@@ -211,7 +211,10 @@
                     </li>
                     <li>
                          <a href="listBrand">Danh sách cửa hàng</a>
-                    </li>             
+                    </li>   
+                    <li>
+                         <a href="listwithdraw">Danh sách rút tiền của cộng tác viên</a>
+                    </li>    
                 </ul>
                 <a href="logout" class="dropdown-item text-danger">Đăng xuất</a>
             </div>

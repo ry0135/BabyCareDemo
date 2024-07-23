@@ -30,7 +30,7 @@ private static final DecimalFormat decimalFormat = new DecimalFormat("###0");
         String billID = request.getParameter("billID");
         double servicePrice = Double.parseDouble(servicePriceStr);
         String serviceName = request.getParameter("serviceName");
-
+        String email = request.getParameter("t");
         // Calculate 80% of servicePrice
         double refundAmount = servicePrice * 0.80;
 
@@ -41,6 +41,7 @@ private static final DecimalFormat decimalFormat = new DecimalFormat("###0");
         request.setAttribute("refundAmount", decimalFormat.format(refundAmount));
         request.setAttribute("billID", billID);
         request.setAttribute("serviceName", serviceName);
+        request.setAttribute("t", email);
 
         request.getRequestDispatcher("customerRefund.jsp").forward(request, response);
     }
@@ -62,6 +63,7 @@ private static final DecimalFormat decimalFormat = new DecimalFormat("###0");
             String accountName = request.getParameter("accountName");
             double refundAmount = Double.parseDouble(request.getParameter("refundAmount"));
             String note = request.getParameter("note");
+            String email = request.getParameter("email");
 
             // Get current date for refundDate
             String refundDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
@@ -82,6 +84,7 @@ private static final DecimalFormat decimalFormat = new DecimalFormat("###0");
         customerRefund.setRefundStatus(1);
         customerRefund.setNote(note);
         customerRefund.setAccountName(accountName);
+        customerRefund.setEmail(email);
 
             // Call the insertCustomerRefund method
          boolean isInserted = ServiceRespository.insertCustomerRefund(customerRefund);

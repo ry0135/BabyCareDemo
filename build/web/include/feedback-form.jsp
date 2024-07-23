@@ -79,17 +79,53 @@
         .form-group button:hover {
             background-color: #45a049;
         }
+        .fa-star.half::before {
+            content: '\f089'; /* Unicode for half star in Font Awesome */
+            color: #f5b301;
+            position: absolute;
+            margin-left: -1em;
+            top: 1px;
+        }
+
+        /* CSS for star rating */
+        .rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+        }
+
+        .rating input {
+            display: none;
+        }
+
+        .rating label {
+            font-size: 2em;
+            color: #ccc;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .rating input:checked ~ label {
+            color: #f5b301;
+        }
+
+        .rating label:hover,
+        .rating label:hover ~ label {
+            color: #f5b301;
+        }
+
+        .comment-rating {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <h1>Đánh giá dịch vụ</h1>
     <p>We would love to hear about your experience with our service!</p>
-    <% if (request.getAttribute("errorMessage") != null) { %>
-        <div class="alert alert-danger" role="alert">
-            <%= request.getAttribute("errorMessage") %>
-        </div>
-    <% } %>
-    <form action="FeedBackServlet" method="post">
+  
+    <form id="ratingForm" action="FeedBackServlet" method="post" onsubmit="return validateForm()">
         <div class="form-group">
             <label for="customerID"></label>
             <input type="hidden" id="customerID" name="CustomerID" value="<%= request.getAttribute("CustomerID") %>" required readonly>
@@ -101,65 +137,48 @@
         <div class="form-group">
             <label for="serviceID"></label>
             <input type="hidden" id="serviceID" name="ServiceID" value="<%= request.getAttribute("ServiceID") %>" required>
-<!--            <h3><%= request.getAttribute("ServiceID") %></h3>-->
         </div>
         <div class="form-group">
             <label for="testimonial">Đánh giá của bạn</label>
-            <textarea id="testimonial" name="testimonial" placeholder="Share your experience with us..." required></textarea>
+            <textarea id="testimonial" name="testimonial" placeholder="Share your experience with us..." ></textarea>
         </div>
-<!--        <div class="form-group">
-            <label for="serviceID">Ngày/tháng/năm</label>
-            <input type="hidden" id="experienceDate" name="experienceDate" value="<%= request.getAttribute("BookingDate") %>" required>
-            <h3><%= request.getAttribute("experienceDate") %></h3>
-        </div>
-         <div class="form-group">
-            <label for="experienceDate">Ngày/tháng/năm</label>
-            <input type="date" id="experienceDate" name="experienceDate" value="<%= request.getAttribute("BookingDate") %>" required readonly>
-        </div>-->
-        <div class="form-group">
-    <label for="satisfactionLevel">Mức độ hài lòng</label>
-    <div class="satisfaction-level">
-        <input type="radio" id="satisfaction1" name="satisfactionLevel" value="1" required>
-        <label for="satisfaction1" class="satisfaction-label">
-            <img src="https://cdn.pixabay.com/photo/2016/09/01/08/25/smiley-1635454_960_720.png" alt="Sad">
-        </label>
-        <input type="radio" id="satisfaction2" name="satisfactionLevel" value="2" required>
-        <label for="satisfaction2" class="satisfaction-label">
-            <img src="https://e7.pngegg.com/pngimages/647/183/png-clipart-smiley-emoticon-smiley-miscellaneous-smiley-thumbnail.png" alt="Neutral">
-        </label>
-        <input type="radio" id="satisfaction3" name="satisfactionLevel" value="3" required>
-        <label for="satisfaction3" class="satisfaction-label">
-            <img src="https://cdn.pixabay.com/photo/2016/09/01/08/25/smiley-1635459_1280.png" alt="Happy">
-        </label>
-    </div>
-</div>
 
-<style>
-    .satisfaction-level {
-        display: flex;
-        align-items: center;
-    }
-    .satisfaction-label {
-        cursor: pointer;
-        padding: 5px;
-        transition: background-color 0.3s, border 0.3s;
-    }
-    .satisfaction-label img {
-        width: 24px; /* Adjust the size as needed */
-        height: 24px; /* Adjust the size as needed */
-    }
-    .satisfaction-level input[type="radio"] {
-        display: none;
-    }
-    .satisfaction-level input[type="radio"]:checked + .satisfaction-label {
-        background-color: #d3d3d3; /* Change to desired background color */
-        border: 2px solid #000; /* Change to desired border color */
-        border-radius: 5px; /* Optional: make the border rounded */
-    }
-</style>
+        <!-- Star Rating -->
+        <div class="form-group">
+            <label>Rating:</label>
+            <div class="rating">
+                <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="5 stars">★</label>
+                <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 stars">★</label>
+                <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 stars">★</label>
+                <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 stars">★</label>
+                <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 star">★</label>
+            </div>
+        </div>
+
         <div class="form-group">
             <button type="submit">Submit</button>
         </div>
     </form>
+
+    <script>
+        function validateForm() {
+            const ratings = document.getElementsByName('rating');
+            let ratingSelected = false;
+
+            for (const rating of ratings) {
+                if (rating.checked) {
+                    ratingSelected = true;
+                    break;
+                }
+            }
+
+            if (!ratingSelected) {
+                alert('Vui lòng đánh giá sao cho sản phẩm.');
+                return false; // Ngăn biểu mẫu gửi đi
+            }
+
+            return true; // Cho phép biểu mẫu gửi đi
+        }
+    </script>
 </body>
 </html>

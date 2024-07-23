@@ -128,7 +128,7 @@
                     </button>
                     <div class="collapse navbar-collapse" id="navbarCollapse">
                         <div class="navbar-nav mx-auto" style="font-family: Arial;">
-                            <a  href="index.jsp" class="nav-item nav-link active">Home</a>
+                            <a  href="index" class="nav-item nav-link active">Home</a>
 
                             <a href="listService" class="nav-item nav-link">Dịch Vụ</a>
                             <a href="product" class="nav-item nav-link">Sản Phẩm</a>
@@ -152,10 +152,33 @@
                                 </c:if>
                                 <c:if test="${sessionScope.user!=null}">
                                     <c:if test="${sessionScope.user.role == 4 }">
-                                        <div class="wallet-section ms-4" style="margin-top: 15px">
+<!--                                        <div class="wallet-section ms-4" style="margin-top: 15px">
                                         <i class="bi bi-wallet wallet-icon"></i>
-                                        <span class="wallet-label">Ví tiền</span>
+                                        <a href="transaction" class="wallet-label"> Ví tiền ${revenue} vnđ</a>
+
+                                        </div>-->
+
+                                    <div class="wallet-section ms-4" style="margin-top: 15px">
+                                        <i class="bi bi-wallet wallet-icon"></i>
+                                        <div class="dropdown d-inline">
+                                            <c:if test="${not empty sessionScope.revenue}">
+                                                <a href="#" class="wallet-label dropdown-toggle" id="walletDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Ví tiền ${revenue} vnđ
+                                                </a>
+                                            </c:if>
+<!--                                            <a href="#" class="wallet-label dropdown-toggle" id="walletDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Ví tiền ${revenue} vnđ
+                                            </a>
+-->
+                                            
+                                            <ul class="dropdown-menu " style="background-color: #ffecf2" aria-labelledby="walletDropdown">
+                                                <li><a class="dropdown-item" href="transaction">Lịch sử giao dịch</a></li>
+                                                <li><a class="dropdown-item" href="withdraw">Yêu Cầu Rút Tiền</a></li>
+
+                                            </ul>
+                                        </div>
                                     </div>
+
                                 </c:if>
                                 <div class="nav-item dropdown" >
 
@@ -168,22 +191,22 @@
                                     </div>           
                                     <div class="dropdown-menu m-0" style="left: 131px;">
                                         <a href="profile" class="dropdown-item">Quản lí thông tin cá nhân</a>
-                                        <a href="changepass" class="dropdown-item">Đổi mật khẩu</a>
+                                      
 
 
                                         <c:if test="${sessionScope.user.role  == 2}">
 
                                             <a href="preferential-list-manager"  class="dropdown-item">Quản lí mã giảm giá</a>
-                                            <a href="ListBookingEmploye" class="dropdown-item">Quản lí đơn dịch vụ</a>
-
+                                            <a href="ListCustomerPayment" class="dropdown-item">Quản lí đơn dịch vụ</a>
                                             <a href="service-add.jsp" class="dropdown-item">Quản lí dịch vụ</a>
+                                            <a href="category-add.jsp" class="dropdown-item">Quản lí danh mục</a>
 
                                         </c:if>
                                         <c:if test="${sessionScope.user.role  == 4}">
                                             <a href="product-list-manager" class="dropdown-item">Quản lí sản phẩm</a>
                                             <a href="order-list-manager" class="dropdown-item">Quản lí đơn hàng</a>
                                             <a href="ListBookingCustomerIDServlet" class="dropdown-item">Quản lí dich vụ</a>
-                                            <a href="StatisticCTV" class="dropdown-item">Quản lý doanh thu</a>
+                                            <a href="StatisticCTV" class="dropdown-item">Quản lí doanh thu</a>
                                             <a href="getorderhistoryservlet" class="dropdown-item">Lịch sử đặt hàng</a> 
 
 

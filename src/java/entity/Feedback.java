@@ -38,7 +38,13 @@ public class Feedback {
         this.name = name;
     }
 
-   
+   public Feedback( String customerID, int serviceID, String testimonial, int satisfactionLevel, String name) {
+        this.customerID = customerID;
+        this.serviceID = serviceID;
+        this.testimonial = testimonial;
+        this.satisfactionLevel = satisfactionLevel;
+        this.name = name;
+    }
 
     public Feedback(int id, String customerID, int serviceID, String testimonial, Date experienceDate, int satisfactionLevel) {
         this.id = id;

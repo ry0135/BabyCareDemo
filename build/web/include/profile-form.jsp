@@ -15,10 +15,7 @@
                 </div>
 
                 <section>
-<!--                    <a href="#" class="icon-link">
-                        <i class="glyphicon glyphicon-user icon"></i>
-                        <span class="text">Profile</span>
-                    </a>-->
+ 
                     <a href="changepass" class="icon-link">
                         <i class="glyphicon glyphicon-cloud icon"></i>
                         <span class="text">Change password</span>
@@ -89,7 +86,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                     <div class="col-md-4 mb-3">
                         <div>
@@ -102,14 +98,11 @@
                             <label for="address"></label>
                             <div class="input-group">
                                 <br>
-                                <input id="avatar" type="file"  class="form-control" name="avatar" value="${avatar}"  ></input><br>
+                                <input id="avatar" type="file"  class="form-control" name="avatar" value="${avatar}">
                                 <br>                              
-
                             </div>
                         </div>
-                                <div>
-<!--                                    <p>Đường dẫn lưu trữ ảnh: <%= request.getAttribute("imagePath") %></p>-->
-                                </div>
+ 
                     </div>
                                
 

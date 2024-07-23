@@ -30,7 +30,7 @@
                 <div class="col-md-6 offset-3 mb-3">
                     <label for="servicePrice">Giá dịch vụ</label>
                     <div class="input-group">
-                        <input type="text" pattern="^(?:\\d+|\\d*\\.\\d+)$" class="form-control" id="servicePrice" placeholder="Giá dịch vụ" name="servicePrice" aria-describedby="inputGroupPrepend" required>
+                        <input type="text" pattern="^\d{1,8}(.\d{1,2})?$" class="form-control" id="servicePrice" placeholder="Giá dịch vụ" name="servicePrice" aria-describedby="inputGroupPrepend" required>
                         <div class="invalid-feedback">
                             Giá tiền chỉ bao gồm chữ số
                         </div>
@@ -50,10 +50,8 @@
                 <div class="col-md-6 offset-3 mb-3 mt-3">
                     <label for="Description">Mô tả</label>
                     <div class="input-group">
-                        <input pattern="^.{1,100}$" type="text" class="form-control" id="Description" placeholder="Mô tả" name="Description" aria-describedby="inputGroupPrepend" required>
-                        <div class="invalid-feedback">
-                            Tối đa từ 1-100 ký tự
-                        </div>
+                        <input  type="text" class="form-control" id="Description" placeholder="Mô tả" name="Description" aria-describedby="inputGroupPrepend" >
+                        
                     </div>
                 </div>
                 <%-- Submit Button and Message --%>
@@ -67,3 +65,20 @@
         </form>
     </div>
 </div>
+   <script>
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                var forms = document.getElementsByClassName('needs-validation');
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>

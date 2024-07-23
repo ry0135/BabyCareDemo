@@ -202,7 +202,7 @@ public class MakeOrderBankServlet extends HttpServlet {
 
         // Set attributes
         
-         session.setAttribute("typePayment", paymentMethod);
+        session.setAttribute("typePayment", paymentMethod);
         session.setAttribute("discountCode", discountCode);
         request.setAttribute("totalPrice", formattedTotalPrice);
         request.setAttribute("priceWithDiscount", formattedTotalPriceWithDiscount);

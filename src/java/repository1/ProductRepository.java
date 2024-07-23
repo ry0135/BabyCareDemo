@@ -48,7 +48,64 @@ public class ProductRepository {
 //        }
 //    }
     
-      public static void addProduct(String productID, String productName, String productType, String productOrigin, double productPrice, int productAmount, String productImg, String CTVID, String productDescription) throws SQLException, ClassNotFoundException {
+//      public static void addProduct(String productID, String productName, String productType, String productOrigin, double productPrice, int productAmount, String productImg, String CTVID, String productDescription) throws SQLException, ClassNotFoundException {
+//    String sql = "INSERT INTO tblProduct (ProductID, ProductName, ProductType, ProductPrice, ProductImage, Amount, StatusProduct, CTVID, ProductOrigin, ProductDescription, sold, CategoryID) "
+//               + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+//
+//    try (Connection con = DBConnect.getConnection();
+//         PreparedStatement stmt = con.prepareStatement(sql)) {
+//
+//        stmt.setString(1, productID);
+//        stmt.setString(2, productName);
+//        stmt.setString(3, productType);
+//        stmt.setDouble(4, productPrice);
+//        stmt.setString(5, productImg);
+//        stmt.setInt(6, productAmount);
+//        stmt.setInt(7, 1); // Assuming StatusProduct is set to 1 as default
+//        stmt.setString(8, CTVID);
+//        stmt.setString(9, productOrigin);
+//        stmt.setString(10, productDescription);
+//        stmt.setInt(11, 0);
+//
+//        // Determine the Category based on productType
+//        int category = 0; // Default value
+//
+//        String productTypeLower = productType.toLowerCase();
+//
+//        if (productTypeLower.equals("tất cả các mặt hàng dành cho trẻ em")) {
+//            category = 1;
+//        } else if (productTypeLower.equals("quần áo trẻ em")) {
+//            category = 2;   
+//        } else if (productTypeLower.equals("đồ chơi trẻ em")) {
+//            category = 3;
+//        } else if (productTypeLower.equals("tã em bé")) {
+//            category = 4;
+//        } else if (productTypeLower.equals("sữa")) {
+//            category = 5;
+//        } else if (productTypeLower.equals("xe đẩy trẻ em")) {
+//            category = 6;
+//        } else if (productTypeLower.equals("nội thất trẻ em")) {
+//            category = 7;
+//        } else if (productTypeLower.equals("đồ dùng tắm cho bé")) {
+//            category = 8;
+//        } else if (productTypeLower.equals("sách trẻ em")) {
+//            category = 9;
+//        } else if (productTypeLower.equals("đồ dùng ăn uống cho bé")) {
+//            category = 10;
+//        } else if (productTypeLower.equals("chăm sóc sức khỏe cho bé")) {
+//            category = 11;
+//        }
+//        stmt.setInt(12, category);
+//
+//        stmt.executeUpdate();
+//        System.out.println("Product added successfully.");
+//
+//    } catch (SQLException e) {
+//        System.out.println("Error in addProduct");
+//        e.printStackTrace();
+//    }
+//      }
+public static void addProduct(String productID, String productName, String categoryID, String productOrigin, double productPrice, int productAmount, String productImg, String CTVID, String productDescription) throws SQLException, ClassNotFoundException {
     String sql = "INSERT INTO tblProduct (ProductID, ProductName, ProductType, ProductPrice, ProductImage, Amount, StatusProduct, CTVID, ProductOrigin, ProductDescription, sold, CategoryID) "
                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -57,7 +114,7 @@ public class ProductRepository {
 
         stmt.setString(1, productID);
         stmt.setString(2, productName);
-        stmt.setString(3, productType);
+        stmt.setString(3, categoryID); // Directly use categoryID from form
         stmt.setDouble(4, productPrice);
         stmt.setString(5, productImg);
         stmt.setInt(6, productAmount);
@@ -67,35 +124,7 @@ public class ProductRepository {
         stmt.setString(10, productDescription);
         stmt.setInt(11, 0);
 
-        // Determine the Category based on productType
-        int category = 0; // Default value
-
-        String productTypeLower = productType.toLowerCase();
-
-        if (productTypeLower.equals("tất cả các mặt hàng dành cho trẻ em")) {
-            category = 1;
-        } else if (productTypeLower.equals("quần áo trẻ em")) {
-            category = 2;   
-        } else if (productTypeLower.equals("đồ chơi trẻ em")) {
-            category = 3;
-        } else if (productTypeLower.equals("tã em bé")) {
-            category = 4;
-        } else if (productTypeLower.equals("sữa")) {
-            category = 5;
-        } else if (productTypeLower.equals("xe đẩy trẻ em")) {
-            category = 6;
-        } else if (productTypeLower.equals("nội thất trẻ em")) {
-            category = 7;
-        } else if (productTypeLower.equals("đồ dùng tắm cho bé")) {
-            category = 8;
-        } else if (productTypeLower.equals("sách trẻ em")) {
-            category = 9;
-        } else if (productTypeLower.equals("đồ dùng ăn uống cho bé")) {
-            category = 10;
-        } else if (productTypeLower.equals("chăm sóc sức khỏe cho bé")) {
-            category = 11;
-        }
-        stmt.setInt(12, category);
+        stmt.setInt(12, Integer.parseInt(categoryID)); // Directly set categoryID
 
         stmt.executeUpdate();
         System.out.println("Product added successfully.");
@@ -104,8 +133,7 @@ public class ProductRepository {
         System.out.println("Error in addProduct");
         e.printStackTrace();
     }
-      }
-
+}
     public static ArrayList<Product> getListProductByCTVID(String CTVID) {
         ArrayList<Product> listProduct = new ArrayList<>();
         try {
@@ -770,7 +798,86 @@ public class ProductRepository {
 
         return brands;
     }
-   
+     
+     public static boolean addCategory(Category category) {
+    Connection con = null;
+    PreparedStatement stmt = null;
+
+    try {
+        con = DBConnect.getConnection();
+        stmt = con.prepareStatement("INSERT INTO Category(CategoryName, CategoryImg) VALUES (?, ?)");
+        stmt.setString(1, category.getCategoryName());
+        stmt.setString(2, category.getImg());
+        stmt.executeUpdate();
+    } catch (Exception e) {
+        System.out.println("Error in addCategory(Category category)");
+        e.printStackTrace();
+        return false;
+    } finally {
+        try {
+            if (stmt != null) stmt.close();
+            if (con != null) con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    return true;
+}
+public static boolean updateCategory(Category category) throws SQLException, ClassNotFoundException {
+    try (Connection con = DBConnect.getConnection()) {
+        String query = "UPDATE Category SET CategoryName=?, CategoryImg=? WHERE CategoryID=?";
+        try (PreparedStatement stmt = con.prepareStatement(query)) {
+            stmt.setString(1, category.getCategoryName());
+            stmt.setString(2, category.getImg());
+            stmt.setInt(3, category.getCategoryID());
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0;
+        }
+    } catch (SQLException e) {
+        System.out.println("Error updating category");
+        e.printStackTrace();
+        return false;
+    }
+}
+   public static List<Category> fetchCategories() {
+        List<Category> list = new ArrayList<>();
+        try {
+            String query = "SELECT  CategoryID,CategoryName FROM Category";
+            Connection con = DBConnect.getConnection();
+            PreparedStatement stmt = con.prepareStatement(query);
+            ResultSet results = stmt.executeQuery();
+            while (results.next()) {
+                int categoryID = results.getInt(1);
+                String CategoryName = results.getString(2);
+                list.add(new Category(categoryID, CategoryName));
+            }
+        } catch (Exception e) {
+            System.err.println("Loi database method listcategory class ProductRepository");
+        }
+        return list;
+    }
+   public static Category getCategory(String id) {
+    try {
+        String query = "SELECT * FROM Category WHERE CategoryID = ?";
+        Connection con = DBConnect.getConnection();
+        PreparedStatement stmt = con.prepareStatement(query);
+        stmt.setString(1, id);
+        ResultSet results = stmt.executeQuery();
+        if (results.next()) {
+            int categoryId = results.getInt(1);
+            String categoryName = results.getString(2);
+            String categoryImg = results.getString(3);
+
+            Category category = new Category(categoryId, categoryName, categoryImg);
+            return category;
+        }
+    } catch (Exception e) {
+        System.out.println("Error in getCategory(id) method in ProductRepository.java");
+        e.printStackTrace();
+    }
+    return null;
+}
+
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
 
 //        String productID = "P004";

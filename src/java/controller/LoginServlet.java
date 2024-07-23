@@ -20,7 +20,7 @@ public class LoginServlet extends HttpServlet {
         
         // Nếu người dùng đã đăng nhập, chuyển hướng đến trang chủ
         if (user != null) {
-            response.sendRedirect("index.jsp");
+            response.sendRedirect("index");
         } else {
             response.sendRedirect("login.jsp");
         }
@@ -45,7 +45,7 @@ public class LoginServlet extends HttpServlet {
                 passCookies.setMaxAge(60 * 60 * 24);
                 response.addCookie(userCookies);
                 response.addCookie(passCookies);
-                 Cart cart = CartRepository.loadCartByUserId(user.getUserId());
+                Cart cart = CartRepository.loadCartByUserId(user.getUserId());
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
                 session.setAttribute("cart", cart);
@@ -55,7 +55,7 @@ public class LoginServlet extends HttpServlet {
                 if ("Admin".equalsIgnoreCase(username)) {
                     response.sendRedirect("admin");
                 } else {
-                    response.sendRedirect("index.jsp");
+                    response.sendRedirect("index");
                 }
             }
         } else {

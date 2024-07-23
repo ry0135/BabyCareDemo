@@ -13,6 +13,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import repository1.OrderRepository;
 import repository1.UserRepository;
 
@@ -25,8 +26,10 @@ public class ApproveCTVServlet extends HttpServlet {
    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
         String userId=request.getParameter("CTVID");
         UserRepository.updateCustomerToCTV(userId);
+        session.setAttribute("message", "Duyệt Cộng Tác Viên Thành Công!");
         response.sendRedirect("listRegisterCTV");
     }
 

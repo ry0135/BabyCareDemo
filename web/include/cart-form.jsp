@@ -362,7 +362,7 @@
                                         <div class="form-group">
                                             <select class="form-control" name="paymentMethod" id="paymentMethod" onchange="changeFormAction(this)">
                                                 <option value="0">Thanh toán khi nhận hàng</option>
-                                                <option value="1">Chuyển khoản</option>
+                                                <option value="1">Thanh toán VNPAY</option>
                                             </select>
                                         </div>
                                         <div class="flex-container">

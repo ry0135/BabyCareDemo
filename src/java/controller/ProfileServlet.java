@@ -16,6 +16,7 @@ public class ProfileServlet extends HttpServlet {
         request.setCharacterEncoding("utf-8");
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
+        
         System.out.println("Lay thong tin cua" + user);
         String firstname = user.getFirstname(), lastname = user.getLastname(), address = user.getAddress(),avatar = user.getAvatar(), phone = user.getPhone();
         request.setAttribute("firstname", firstname);

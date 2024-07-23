@@ -123,13 +123,13 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
         logger.info("filename: " + filename);
         String commentImg = filename; // Lưu trữ tên file ảnh vào biến productImg
 
-        File uploadDir = new File(getServletContext().getRealPath("/") + "img");
+        File uploadDir = new File(getServletContext().getRealPath("/") + "img/commentProduct");
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
         }
 
         if (filename != null && !filename.isEmpty()) {
-             String path = "D:\\FPT_VNI\\Semester 5\\SWP\\BabyCare3\\web\\img\\commentProduct" + File.separator + filename;
+             String path = "D:\\FPT_VNI\\Semester 5\\BabyCare\\BabyCare4\\web\\img\\commentProduct" + File.separator + filename;
 //           String path = getServletContext().getRealPath("/") + "img" + File.separator + "commentProduct" + File.separator + filename;
 
             request.setAttribute("imagePath", path);

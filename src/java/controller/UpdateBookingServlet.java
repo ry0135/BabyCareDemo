@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -36,24 +38,45 @@ throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         response.setCharacterEncoding("utf-8");
         request.setCharacterEncoding("utf-8");
-        String bookingID = request.getParameter("bookingID");
+        int bookingID = Integer.parseInt(request.getParameter("bookingID"));
         String name = request.getParameter("name");
         String address = request.getParameter("address");
         String sex = request.getParameter("sex");
         String bookingDate = request.getParameter("bookingDate");
         String slot = request.getParameter("slot");
         String note = request.getParameter("note");
+        String serviceID = request.getParameter("serviceID");
+
+      
+         int bookedCount = 0;
+        try {
+            bookedCount = ServiceRespository.countBookingsForDateAndSlot(bookingDate, slot,serviceID);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(UpdateBookingServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+       if (bookedCount >=5  ) {
+        request.setAttribute("errorMessage", slot + " ngày " + bookingDate + " đã đầy, bạn vui lòng chọn slot khác.");
         
+    ServiceRespository serviceRepository = new ServiceRespository();
+    Booking booking = serviceRepository.getBookingById(bookingID);
+    request.setAttribute("booking", booking);
+        
+        request.getRequestDispatcher("updateBooking.jsp").forward(request, response);
+           
+            return;
+        }
 
         Booking booking = new Booking();
-        booking.setBookingID(Integer.parseInt(bookingID));
+        booking.setBookingID(bookingID);
         booking.setName(name);
         booking.setAddress(address);
         booking.setSex(sex);
         booking.setBookingDate(bookingDate);
         booking.setSlot(slot);
         booking.setNote(note);
-
+        
+     
         ServiceRespository serviceRepository = new ServiceRespository();
         serviceRepository.updateBooking(booking);
 

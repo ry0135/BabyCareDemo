@@ -78,7 +78,7 @@ public class AddBrandServlet extends HttpServlet {
         String logo = filename; // Lưu trữ tên file ảnh vào biến logo
 
         // Tạo thư mục nếu chưa tồn tại
-        File absoluteDir = new File("D:\\FPT_VNI\\Semester 5\\SWP\\BabyCare3\\web\\img\\brand");
+        File absoluteDir = new File("D:\\FPT_VNI\\Semester 5\\BabyCare\\BabyCare4\\web\\img\\brand");
         if (!absoluteDir.exists()) {
             absoluteDir.mkdirs();
         }
@@ -89,7 +89,7 @@ public class AddBrandServlet extends HttpServlet {
         }
 
         if (filename != null && !filename.isEmpty()) {
-            String absolutePath = "D:\\FPT_VNI\\Semester 5\\SWP\\BabyCare3\\web\\img\\brand" + File.separator + filename;
+            String absolutePath = "D:\\FPT_VNI\\Semester 5\\BabyCare\\BabyCare4\\web\\img\\brand" + File.separator + filename;
             String relativePath = getServletContext().getRealPath("/") + "img" + File.separator + "brand" + File.separator + filename;
 
             // Lưu file vào cả hai vị trí

@@ -66,7 +66,7 @@ public class AddPreferentialServlet extends HttpServlet {
         Part part = request.getPart("preferentialImg");
         String filename = part.getSubmittedFileName();
 
-         File absoluteDir = new File("D:\\FPT_VNI\\Semester 5\\SWP\\BabyCare3\\web\\img\\discount");
+         File absoluteDir = new File("D:\\FPT_VNI\\Semester 5\\BabyCare\\BabyCare4\\web\\img\\discount");
         if (!absoluteDir.exists()) {
             absoluteDir.mkdirs();
         }
@@ -77,7 +77,7 @@ public class AddPreferentialServlet extends HttpServlet {
         }
 
         if (filename != null && !filename.isEmpty()) {
-            String absolutePath = "D:\\FPT_VNI\\Semester 5\\SWP\\BabyCare3\\web\\img\\discount" + File.separator + filename;
+            String absolutePath = "D:\\FPT_VNI\\Semester 5\\BabyCare\\BabyCare4\\web\\img\\discount" + File.separator + filename;
             String relativePath = getServletContext().getRealPath("/") + "img" + File.separator + "discount" + File.separator + filename;
 
             // Lưu file vào cả hai vị trí

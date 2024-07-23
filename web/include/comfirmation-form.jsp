@@ -62,7 +62,7 @@ Author     : ACER
                                 <li class="list-group-item"><strong>Tên dịch vụ:</strong> <%=serviceName%></li>
                                 <li class="list-group-item"><strong>Ngày đặt:</strong> <%= bookingDate%></li>
                                 <li class="list-group-item"><strong>Khoảng thời gian:</strong> <%= slot%></li>
-                                <li class="list-group-item"><strong>Trạng thái:</strong> Đang xử lý</li> 
+                                <li class="list-group-item"><strong>Trạng thái:</strong> Đã Đặt</li> 
                                 <li class="list-group-item"><strong>Giá:</strong> <%= servicePrice%> VND</li>
                                 <li class="list-group-item"><strong>Ghi chú:</strong> <%= note%></li>
                                 <li class="list-group-item"><strong>Mã dịch vụ:</strong> <%= bookingID%></li>

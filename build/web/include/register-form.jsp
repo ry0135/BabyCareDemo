@@ -166,13 +166,26 @@
                         </div>
                     </div>
                 </form>
+                        
+                         <p class="login-link">Bạn đã có tài khoản? <a href="login.jsp">Đăng nhập</a></p>
 
             </div>
         </div>
     </div>
 
 </div>
-
+<style>
+        .login-link {
+            color: grey;
+        }
+        .login-link a {
+            color: red;
+            text-decoration: none;
+        }
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
 <script>
     // Example starter JavaScript for disabling form submissions if there are invalid fields
     (function () {

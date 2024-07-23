@@ -31,13 +31,10 @@ public class FeedBackServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        response.setCharacterEncoding("utf-8");
-        request.setCharacterEncoding("utf-8");
         String customerID = request.getParameter("CustomerID");
         String serviceIDString = request.getParameter("ServiceID");
         String testimonial = request.getParameter("testimonial");
-        String satisfactionLevelString = request.getParameter("satisfactionLevel");
+        String satisfactionLevelString = request.getParameter("rating");
         String name = request.getParameter("name");
 
         int serviceID;
@@ -45,11 +42,11 @@ public class FeedBackServlet extends HttpServlet {
         Date experienceDate;
 
         try {
-            // Phân tích và kiểm tra các tham số đầu vào
+            
             serviceID = Integer.parseInt(serviceIDString);
             satisfactionLevel = Integer.parseInt(satisfactionLevelString);
 
-            // Kiểm tra và phân tích experienceDate
+            
             String bookingDate = request.getParameter("BookingDate");
             if (bookingDate != null && !bookingDate.isEmpty()) {
                 experienceDate = Date.valueOf(bookingDate); // Convert từ chuỗi sang java.sql.Date
@@ -58,8 +55,7 @@ public class FeedBackServlet extends HttpServlet {
             }
 
             // Tạo đối tượng Feedback
-            Feedback feedback = new Feedback(customerID, serviceID, testimonial, experienceDate, satisfactionLevel, name);
-
+            Feedback feedback = new Feedback(customerID, serviceID, testimonial, satisfactionLevel, name);
             // Lưu phản hồi vào cơ sở dữ liệu
             ServiceRespository.saveFeedback(feedback);
 

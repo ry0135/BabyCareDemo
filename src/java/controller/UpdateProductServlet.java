@@ -1,5 +1,6 @@
 package controller;
 
+import entity.Category;
 import entity.Product;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,6 +13,7 @@ import repository1.ProductRepository;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.logging.Logger;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.Part;
@@ -34,6 +36,10 @@ public class UpdateProductServlet extends HttpServlet {
                 return;
             }
             request.setAttribute("product", product);
+            
+            List<Category> categories = ProductRepository.fetchCategories();
+        System.out.println(categories);
+        request.setAttribute("categories", categories);
             request.getRequestDispatcher("update-product.jsp").forward(request, response);
         } catch (Exception e) {
             logger.severe("Error fetching product info: " + e.getMessage());
@@ -68,12 +74,12 @@ public class UpdateProductServlet extends HttpServlet {
 
          Part part = request.getPart("productImg");
         String filename = part != null ? part.getSubmittedFileName() : "";
-        String absolutePath = "D:\\FPT_VNI\\Semester 5\\SWP\\BabyCare3\\web\\img" + File.separator + filename;
+        String absolutePath = "D:\\FPT_VNI\\Semester 5\\BabyCare\\BabyCare4\\web\\img" + File.separator + filename;
         String relativePath = getServletContext().getRealPath("/") + "img" + File.separator +  filename;
 
         if (!filename.isEmpty()) {
             // Tạo thư mục nếu chưa tồn tại
-            File absoluteDir = new File("D:\\FPT_VNI\\Semester 5\\SWP\\BabyCare3\\web\\img");
+            File absoluteDir = new File("D:\\FPT_VNI\\Semester 5\\BabyCare\\BabyCare4\\web\\img");
             if (!absoluteDir.exists()) {
                 absoluteDir.mkdirs();
             }

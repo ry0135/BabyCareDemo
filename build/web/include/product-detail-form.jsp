@@ -1,5 +1,7 @@
+ 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+
 
 <!DOCTYPE html>
 <html>
@@ -9,7 +11,7 @@
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
         <style>
             body {
@@ -241,8 +243,8 @@
                 background-color: #45a049;
                 transform: scale(1.1);
             }
-          .fa-star {
-            color: #f5b301;
+            .fa-star {
+                color: #f5b301;
             }
 
             .fa-star.half::before {
@@ -252,7 +254,29 @@
                 margin-left: -1em;
                 top: 1px;
             }
-
+            .out-of-stock {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5); /* Màu nền bán trong suốt */
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 16px;
+                font-weight: bold;
+                text-transform: uppercase;
+                opacity: 1; /* Đặt độ mờ 100% để thông báo hiện rõ */
+                z-index: 1; /* Đảm bảo thông báo nằm trên cùng */
+                display: ${product.productAmount == 0 ? 'flex' : 'none'}; /* Ẩn khi không phải hết hàng */
+            }
+            .disabled-button {
+    opacity: 0.5; /* Làm mờ nút */
+    pointer-events: none; /* Vô hiệu hóa sự kiện nhấp chuột */
+    cursor: not-allowed; /* Hiển thị con trỏ không cho phép */
+}
         </style>
     </head>
     <body>
@@ -261,8 +285,16 @@
             <div class="product-container">
                 <div class="row">
                     <div class="col-md-6 product-image">
-                        <img src="img/${product.img}" alt="Sản phẩm">
-                    </div>
+                        <div class="product-item position-relative bg-white d-flex flex-column text-center ${product.productAmount == 0 ? 'out-of-stock' : ''}">
+
+                            <img class="img-fluid" src="img/${product.img}" alt="">
+                            <div class="out-of-stock" style="display: ${product.productAmount == 0 ? 'flex' : 'none'}; /* Ẩn khi không phải hết hàng */">Hết hàng</div>
+
+                        </div>
+                    </div>     
+                    <!--                    <div class="col-md-6 product-image">
+                                            <img src="img/${product.img}" alt="Sản phẩm">
+                                        </div>-->
                     <div class="col-md-6">
                         <h2>${product.productName}</h2>
                         <div style="display: flex; align-items: center;">
@@ -321,17 +353,21 @@
                             <div class="buttons">
                                 <div>
                                     <input name="id" type="text" hidden="" value="${product.productId}">
-                                    <c:if test="${sessionScope.user.userId ne product.CTVID}">
-                                        <input class="btn btn-primary" type="submit" value="Thêm Vào Giỏ Hàng">
-                                        <!--<a href="cart.jsp" class="btn btn-primary" value="Thêm Vào Giỏ Hàng">Mua Ngay</a>-->
-                                    </c:if>
-                                    <c:if test="${sessionScope.user.userId eq product.CTVID}">
-                                        <!--                                        <input class="btn btn-primary" type="submit" value="Thêm Vào Giỏ Hàng">-->
-                                        <!--<a href="cart.jsp" class="btn btn-primary" value="Thêm Vào Giỏ Hàng">Mua Ngay</a>-->
-                                    </c:if>
-                                    <%--<c:if test="${sessionScope.user.userId eq product.CTVID}">--%>
-                                    <!--<p>Bạn không thể thêm sản phẩm của mình vào giỏ hàng</p>-->
-                                    <%--</c:if>--%>
+                                    <c:choose>
+                                        <c:when test="${product.productAmount gt 0}">
+                                            <c:if test="${sessionScope.user.userId ne product.CTVID and sessionScope.user.role ne 2}">
+                                                <input class="btn btn-primary" type="submit" value="Thêm Vào Giỏ Hàng">
+                                            </c:if>
+                                            <c:if test="${sessionScope.user.userId eq product.CTVID or sessionScope.user.role eq 2}">
+                                                <!-- Nút bị vô hiệu hóa trong trường hợp này -->
+                                                <input class="btn btn-primary" type="submit" value="Thêm Vào Giỏ Hàng">
+                                            </c:if>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <!-- Nút bị làm mờ và vô hiệu hóa khi hết hàng -->
+                                            <input class="btn btn-primary disabled-button" type="submit" value="Thêm Vào Giỏ Hàng" disabled>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
                                 <h3>${message}</h3>
                             </div>
@@ -348,7 +384,7 @@
                     <div class="col-md-9">
                         <h1>${brand.brandName}</h1>
                         <p class="stats">Đánh Giá: 125</p>
-                        <p class="stats">Sản Phẩm: ${productCount}</p>
+                        <p class="stats">Sản Phẩm: 87</p>
                         <p class="stats">Tỉ Lệ Phản Hồi: 100%</p>
                         <p class="stats">Thời Gian Phản Hồi: trong vài giờ</p>
                         <p class="stats">Tham Gia: 48 ngày trước</p>
@@ -359,11 +395,34 @@
                             <input name="CTVID" type="text" hidden="" value="${brand.CTVID}">
                             <button class="button">Xem Shop</button>
                         </form>
-                        
                         <form action="chat">
                             <input name="CTVID" type="text" hidden="" value="${brand.CTVID}">
-                            <button class="button">Nhắn tin</button>
+                            <button class="button">Nhắn tin</button>  
                         </form>
+                        <input type="hidden" name="brandID" value="${brand.brandID}">
+
+
+                        <c:choose>
+                            <c:when test="${sessionScope.user != null && product != null}">
+                                <c:if test="${sessionScope.user.userId ne product.CTVID}">
+                                    <c:choose>
+                                        <c:when test="${!isFollowing}">
+                                            <input name="CTVID" type="text" hidden="" value="${brand.CTVID}">
+                                            <a href="followBrand?brandId=${brand.brandID}&id=${product.productId}" class="btn btn-danger">Theo Dõi</a>
+                                        </c:when>
+                                        <c:when test="${isFollowing}">
+                                            <input name="id" type="text" hidden="" value="${product.productId}">
+                                            <input name="CTVID" type="text" hidden="" value="${brand.CTVID}">
+                                            <a href="unfollowBrand?brandId=${brand.brandID}&id=${product.productId}" class="btn btn-danger">Bỏ Theo Dõi</a>
+                                        </c:when>     
+                                    </c:choose>
+                                </c:if>
+
+
+                            </c:when>
+                        </c:choose>
+
+
                     </div>
                 </div>
             </div>
@@ -416,7 +475,7 @@
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                           
+
                             <button style="margin-left: 445px;" type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -428,51 +487,51 @@
                 </div>
             </div>
 
-            
+
 
 
 
         </div>
-            
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
         <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const comments = Array.from(document.querySelectorAll(".comment-item"));
-                const commentsPerPage = 5;
-                const pagination = document.getElementById("pagination");
-                let currentPage = 1;
-                const totalPages = Math.ceil(comments.length / commentsPerPage);
+                                           document.addEventListener("DOMContentLoaded", function () {
+                                               const comments = Array.from(document.querySelectorAll(".comment-item"));
+                                               const commentsPerPage = 5;
+                                               const pagination = document.getElementById("pagination");
+                                               let currentPage = 1;
+                                               const totalPages = Math.ceil(comments.length / commentsPerPage);
 
-                function showPage(page) {
-                    comments.forEach((comment, index) => {
-                        comment.style.display = (index >= (page - 1) * commentsPerPage && index < page * commentsPerPage) ? "block" : "none";
-                    });
-                }
+                                               function showPage(page) {
+                                                   comments.forEach((comment, index) => {
+                                                       comment.style.display = (index >= (page - 1) * commentsPerPage && index < page * commentsPerPage) ? "block" : "none";
+                                                   });
+                                               }
 
-                function createPagination() {
-                    pagination.innerHTML = "";
-                    for (let i = 1; i <= totalPages; i++) {
-                        const button = document.createElement("button");
-                        button.textContent = i;
-                        button.classList.add("page-btn");
-                        if (i === currentPage)
-                            button.classList.add("active");
-                        button.addEventListener("click", function () {
-                            currentPage = i;
-                            showPage(currentPage);
-                            document.querySelector(".pagination .active").classList.remove("active");
-                            button.classList.add("active");
-                        });
-                        pagination.appendChild(button);
-                    }
-                }
+                                               function createPagination() {
+                                                   pagination.innerHTML = "";
+                                                   for (let i = 1; i <= totalPages; i++) {
+                                                       const button = document.createElement("button");
+                                                       button.textContent = i;
+                                                       button.classList.add("page-btn");
+                                                       if (i === currentPage)
+                                                           button.classList.add("active");
+                                                       button.addEventListener("click", function () {
+                                                           currentPage = i;
+                                                           showPage(currentPage);
+                                                           document.querySelector(".pagination .active").classList.remove("active");
+                                                           button.classList.add("active");
+                                                       });
+                                                       pagination.appendChild(button);
+                                                   }
+                                               }
 
-                showPage(currentPage);
-                createPagination();
-            });
+                                               showPage(currentPage);
+                                               createPagination();
+                                           });
         </script>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
@@ -483,13 +542,13 @@
             });
         </script>
         <script>
-                $('#imageModal').on('show.bs.modal', function (event) {
-                    var button = $(event.relatedTarget); // Button that triggered the modal
-                    var imageSrc = button.attr('src'); // Extract info from data-* attributes
-                    var modal = $(this);
-                    modal.find('.modal-body #modalImage').attr('src', imageSrc);
-                });
-            </script>
+            $('#imageModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget); // Button that triggered the modal
+                var imageSrc = button.attr('src'); // Extract info from data-* attributes
+                var modal = $(this);
+                modal.find('.modal-body #modalImage').attr('src', imageSrc);
+            });
+        </script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

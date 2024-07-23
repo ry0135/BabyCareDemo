@@ -50,6 +50,11 @@
         </div>
         <button type="submit" class="btn btn-primary">Thêm</button>
     </form>
+    <div>
+        <c:if test="${not empty thongbao}">
+            <div class="alert alert-info">${thongbao}</div>
+        </c:if>
+    </div>
 </div>
 
 <script>

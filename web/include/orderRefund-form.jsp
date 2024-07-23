@@ -124,10 +124,7 @@
                         <input type="hidden" class="form-control"  name="id" value="${id}" aria-describedby="inputGroupPrepend" required>
 
                       
-                    </div>
-                 
-
-
+                    </div>                
                 </div>
                 <div class="col-xl-6">
                     <input type="text" class="form-control py-3 border-primary bg-transparent text-dark" style="width: 500px" placeholder="Tên chủ thẻ" name="accountName" required>
@@ -157,7 +154,7 @@
                     <input type="text" class="form-control py-3 border-primary bg-transparent text-dark" style="width: 500px" placeholder="Số Thẻ" name="accountNumber" >
                
                 </div>
-                <div class="col-xl-6"></div>
+                
                 <div class="col-12">
  
                     <select name="note" class="form-control py-3 border-primary bg-transparent text-dark" style="width: 500px">

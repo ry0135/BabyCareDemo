@@ -592,7 +592,79 @@ public class StatisticsResponsitory {
             }
         }
     }
+    public static double getMonthlyRevenueByCTV( int month, int year, String ctvid) {
+        double totalRevenue = 0;
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet resultSet = null;
 
+        try {
+            con = DBConnect.getConnection();
+             String query = "SELECT SUM(od.PriceAtPuchase)*0.9 AS Revenue "
+                    + "FROM tblOrderDetails od "
+                    + "JOIN tblBill b ON b.BillID = od.BillID "
+                    + "WHERE (b.StatusBill = N'Đã hoàn thành' OR b.StatusBill = N'Đã đánh giá') "
+                    + "AND b.CTVID = ?\n"
+                    + "AND MONTH(b.DateCreate) = ? "
+                    + "AND YEAR(b.DateCreate) = ? ";
+
+            stmt = con.prepareStatement(query);
+            stmt.setString(1, ctvid);
+            stmt.setInt(2, month);
+            stmt.setInt(3, year);
+            
+
+            resultSet = stmt.executeQuery();
+            if (resultSet.next()) {
+                totalRevenue = resultSet.getDouble("Revenue");
+            }
+        } catch (Exception e) {
+            System.out.println("Error in getMonthlyRevenueByAdmin method: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println("Error in closing database resources: " + ex.getMessage());
+                ex.printStackTrace();
+            }
+        }
+        return totalRevenue;
+    }
+    public static double getOrderRevenueByYearCTV(int year, String ctvId) {
+    double totalRevenue = 0;
+
+    try {
+        Connection con = DBConnect.getConnection();
+        String query = "SELECT COALESCE(SUM(od.PriceAtPuchase)*0.9, 0) AS ten_percent_total_price\n"
+                    + "FROM [tblOrderDetails] od\n"
+                    + "JOIN [tblBill] b ON b.BillID = od.BillID\n"
+                    + "LEFT JOIN [tblPreferential] p ON b.PreferentialID = p.Preferential\n"
+                    + "WHERE (b.StatusBill = N'Đã hoàn thành' OR b.StatusBill = N'Đã đánh giá')\n"
+                    + "AND b.CTVID = ?\n"
+                    + "AND YEAR(b.DateCreate) = ?";
+        PreparedStatement stmt = con.prepareStatement(query);
+        stmt.setString(1, ctvId);
+        stmt.setInt(2, year);// Thiết lập tham số năm vào câu truy vấn
+        ResultSet resultSet = stmt.executeQuery();
+        if (resultSet.next()) {
+            totalRevenue = resultSet.getDouble("ten_percent_total_price");
+        }
+    } catch (Exception e) {
+        System.out.println("Error in getOrderRevenue method");
+        e.printStackTrace();
+    }
+
+    return totalRevenue;
+}
     public static void main(String[] args) {
 //                 double totalRevenue = getOrderRevenue();
 //        System.out.println("Total Revenue for paid orders in 2024: " + totalRevenue);

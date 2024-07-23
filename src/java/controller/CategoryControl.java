@@ -44,8 +44,7 @@ public class CategoryControl extends HttpServlet {
         }
     } else {
         System.out.println("abc");
-    }
-         
+    }      
     }
 }
 

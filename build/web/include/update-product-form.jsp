@@ -63,26 +63,18 @@
                 </div>
             </div>
     </div>
-
-
-    <div class="mb-3">
-        <label for="productType" class="form-label">Chọn loại sản phẩm</label>
-
-        <select class="form-select" id="productType" name="productType">
-            <option value="Tất cả các mặt hàng dành cho trẻ em"${product.productType.equals("Tất cả các mặt hàng dành cho trẻ em") ? "selected" : ""}>Tất cả các mặt hàng dành cho trẻ em</option>
-            <option value="Quần áo trẻ em"${product.productType.equals("Quần áo trẻ em") ? "selected" : ""}>Quần áo trẻ em</option>
-            <option value="Đồ chơi trẻ em" ${product.productType.equals("Đồ chơi trẻ em") ? "selected" : ""}>Đồ chơi trẻ em</option>
-            <option value="Tã em bé" ${product.productType.equals("Tã em bé") ? "selected" : ""}>Tã em bé</option>
-            <option value="Sữa" ${product.productType.equals("Sữa") ? "selected" : ""}>Sữa</option>
-            <option value="Xe đẩy trẻ em" ${product.productType.equals("Xe đẩy trẻ em") ? "selected" : ""}>Xe đẩy trẻ em</option>
-            <option value="Nội thất trẻ em" ${product.productType.equals("Nội thất trẻ em") ? "selected" : ""}>Nội thất trẻ em</option>
-            <option value="Đồ dùng tắm cho bé" ${product.productType.equals("Đồ dùng tắm cho bé") ? "selected" : ""}>Đồ dùng tắm cho bé</option>
-            <option value="Sách trẻ em" ${product.productType.equals("Sách trẻ em") ? "selected" : ""}>Sách trẻ em</option>
-            <option value="Đồ dùng ăn uống cho bé" ${product.productType.equals("Đồ dùng ăn uống cho bé") ? "selected" : ""}>Đồ dùng ăn uống cho bé</option>
-            <option value="Chăm sóc sức khỏe cho bé" ${product.productType.equals("Chăm sóc sức khỏe cho bé") ? "selected" : ""}>Chăm sóc sức khỏe cho bé</option>
-        </select>
+         <div class="mb-3">
+        <div class="input-group">
+                <select class="form-select" id="productType" name="productType" required>
+                    <option value="${product.productType}" >${product.productType}</option>
+                    <c:forEach var="c" items="${categories}">
+                        <option value="${c.categoryID}">
+                            ${c.categoryName}
+                        </option>
+                    </c:forEach>
+                </select>
+            </div>
     </div>
-
     <div class="mb-3">
         <label for="productAmount" class="form-label">Số lượng sản phẩm</label>
         <input type="text" pattern="^.{1,30}$" class="form-control" id="productAmount" name="productAmount"

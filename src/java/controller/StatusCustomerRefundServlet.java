@@ -69,16 +69,32 @@ public class StatusCustomerRefundServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+         response.setContentType("text/html;charset=UTF-8");
+        response.setCharacterEncoding("utf-8");
+        request.setCharacterEncoding("utf-8");
        String refundID = request.getParameter("refundID");
-       
-
+       String email = request.getParameter("email");
+       String name = request.getParameter("name");
+        String serviceName = request.getParameter("servicename");
+        String price = request.getParameter("price");
+        String note = request.getParameter("note");
         if (refundID != null) {
             int ID = Integer.parseInt(refundID);
             
             
             ServiceRespository serviceRepository = new ServiceRespository();
             boolean updateSuccess = serviceRepository.updateStatusCustomerRefund(ID, 2);
+             String subject = "Xác nhận hoàn tiền";
+                String body = "Kính gửi " + name + ",\n\n"
+                        + "Bạn đã hủy dịch vụ của chúng tôi. Dưới đây là chi tiết:\n\n"
+                        + "Tên dịch vụ: " + serviceName + "\n"
+                      
+                        + "Số tiền hoàn lại :" + price + "\n"
+                        + "Ghi chú: " + note + "\n\n"
+                        + "Trân trọng,\n"
+                        + "BabyNature";
 
+                ServiceRespository.sendEmail(email, subject, body);
             if (updateSuccess) {
                 response.sendRedirect("ListCustomerRefundServlet"); // Redirect to a success page
             } else {

@@ -1,8 +1,4 @@
-<%-- 
-    Document   : booking-service-form
-    Created on : May 26, 2024, 6:42:01 AM
-    Author     : ACER
---%>
+
 <script>
     function validateDate() {
         const bookingDate = document.getElementById('bookingDate').value;

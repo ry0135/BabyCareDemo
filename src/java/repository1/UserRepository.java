@@ -68,6 +68,8 @@ public class UserRepository {
         }
         return true;
     }
+    
+    
 
     public static void updateAvatar(String userID, String avatar) throws SQLException, ClassNotFoundException {
         String query = "UPDATE tblAccount SET Avatar = ? WHERE UserID = ?";
@@ -397,10 +399,10 @@ public class UserRepository {
             message.setFrom(new InternetAddress(username));
             message.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(email));
-            message.setSubject("Verification Code");
-            message.setText("Your verification code is: " + code);
+            message.setSubject("Mã Xác Minh"); // Set subject
+            message.setContent("Mã xác minh của bạn là: " + code, "text/plain; charset=UTF-8"); // Set content with UTF-8 encoding
             Transport.send(message);
-            System.out.println("Code sent successfully.");
+            System.out.println("Đã gửi mã thành công.");
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
@@ -446,7 +448,7 @@ public class UserRepository {
         return pattern.matcher(email).matches();
     }
 
-    public static void sendCodeToEmailSuccsessOrder(String email, String orderID, String name) {
+   public static void sendCodeToEmailSuccsessOrder(String email, String orderID, String name) {
         if (!isValidEmail(email)) {
             throw new IllegalArgumentException("Invalid email address: " + email);
         }
@@ -471,12 +473,11 @@ public class UserRepository {
         try {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
-            message.setRecipients(Message.RecipientType.TO,
-                    InternetAddress.parse(email));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
             message.setSubject("Đơn hàng #" + orderID + " đã giao hàng thành công");
-            message.setText("Xin chào " + name + "\n\n đơn hàng #" + orderID + " đã được giao thành công");
+            message.setContent("Xin chào " + name + ",<br><br>Đơn hàng #" + orderID + " đã được giao thành công.", "text/html; charset=UTF-8");
             Transport.send(message);
-            System.out.println("Code sent successfully.");
+            System.out.println("Email sent successfully.");
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
@@ -717,11 +718,18 @@ public class UserRepository {
         try {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
-            message.setRecipients(Message.RecipientType.TO,
-                    InternetAddress.parse(email));
-            message.setSubject("Account Update Notification");
-            message.setText("Dear User,\n\nTài khoản đăng kí làm CTV đã được duyệt thành công. \n\nBest Regards,\nBabyCare Company");
-
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
+            message.setSubject("Thông báo cập nhật tài khoản");
+            
+            String htmlContent = "<html><body>"
+                + "<p>Chào bạn,</p>"
+                + "<p>Tài khoản đăng ký làm CTV đã được duyệt thành công.</p>"
+                + "<p>Thông tin tài khoản: " + newUserID + "</p>"
+                + "<p>Trân trọng,<br>BabyCare Company</p>"
+                + "</body></html>";
+            
+            message.setContent(htmlContent, "text/html; charset=UTF-8");
+            
             Transport.send(message);
             System.out.println("Update notification sent successfully.");
         } catch (MessagingException e) {
@@ -1028,6 +1036,8 @@ public class UserRepository {
     }
 
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
+        
+        sendUpdateNotificationEmail("namdpde170457@fpt.edu.vn", "user12345");
 //        String userID = "U223";
 //        String username = "abcd";
 //        String password = "123456789";
@@ -1101,15 +1111,15 @@ public class UserRepository {
 //                System.out.println("Customer to CTV update successful.");
 //            } else {
 //                System.out.println("Customer to CTV update failed.");
+////            }
+//    ArrayList<Brand> brands = getListBrandsWithStatusZero();
+//            if (brands != null) {
+//                for (Brand brand : brands) {
+//                    System.out.println(brand);
+//                }
+//            } else {
+//                System.out.println("No brands found or an error occurred.");
 //            }
-    ArrayList<Brand> brands = getListBrandsWithStatusZero();
-            if (brands != null) {
-                for (Brand brand : brands) {
-                    System.out.println(brand);
-                }
-            } else {
-                System.out.println("No brands found or an error occurred.");
-            }
 //        boolean a = UserRepository.hasPendingRegistration("U6772");
 //        System.out.println(a);
 //
@@ -1135,4 +1145,33 @@ public class UserRepository {
 
     }
 
+public static void sendDCodeToEmail(String email, String code) {
+    final String fromEmail = "your_email@gmail.com"; // Change this to your email
+    final String password = "your_password"; // Change this to your password
+
+    Properties props = new Properties();
+    props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.starttls.enable", "true");
+    props.put("mail.smtp.host", "smtp.gmail.com");
+    props.put("mail.smtp.port", "587");
+
+    Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+        protected PasswordAuthentication getPasswordAuthentication() {
+            return new PasswordAuthentication(fromEmail, password);
+        }
+    });
+    
+
+    try {
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(fromEmail));
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+        message.setSubject("Your Discount Code");
+        message.setText("Here is your discount code: " + code);
+        Transport.send(message);
+        System.out.println("Email sent successfully.");
+    } catch (MessagingException e) {
+        e.printStackTrace();
+    }
+}
 }

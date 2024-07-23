@@ -25,7 +25,7 @@
 </style>
 <nav class="nav nav-pills nav-justified">
     <a class="nav-item nav-link active " href="#">Danh sách sản phẩm</a>
-    <a class="nav-item nav-link " href="product-add.jsp">Thêm sản phẩm mới</a>
+    <a class="nav-item nav-link " href="FetchCategories">Thêm sản phẩm mới</a>
 </nav>
 <div class="container mt-3">
     <h2>Quản lí danh sách sản phẩm</h2>

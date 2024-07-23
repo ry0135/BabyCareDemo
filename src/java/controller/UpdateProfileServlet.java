@@ -19,6 +19,9 @@ import java.util.logging.Logger;
 public class UpdateProfileServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
+
+        
         response.sendRedirect("profile");
     }
 
@@ -41,6 +44,8 @@ public class UpdateProfileServlet extends HttpServlet {
         oldUser.setFirstname(firstname);
         oldUser.setLastname(lastname);
         oldUser.setAddress(address);
+//        oldUser.setAvatar(a);
+
         oldUser.setPhone(phone);
         session.setAttribute("user", oldUser);
         
@@ -51,7 +56,7 @@ public class UpdateProfileServlet extends HttpServlet {
         String filename = part.getSubmittedFileName();
         if (filename != null && !filename.isEmpty()) {
             // Đường dẫn tuyệt đối trên hệ thống
-            String absolutePath = "D:\\FPT_VNI\\Semester 5\\SWP\\BabyCare3\\web\\img" + File.separator + filename;
+            String absolutePath = "D:\\FPT_VNI\\Semester 5\\BabyCare\\BabyCare4\\web\\img" + File.separator + filename;
             // Đường dẫn tương đối trong thư mục của dự án
             String relativePath = getServletContext().getRealPath("/") + "img" + File.separator + filename;
 

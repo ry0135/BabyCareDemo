@@ -13,6 +13,7 @@ import javax.servlet.annotation.WebFilter;
     "/list-order-accepted",    "/order-list-paid",
     "/list-order-cancel",
     "/list-order-accepted",
+    "/product-list-manager",
 
 
 

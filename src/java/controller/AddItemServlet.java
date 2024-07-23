@@ -89,9 +89,9 @@ public class AddItemServlet extends HttpServlet {
             }
 
             request.setAttribute("product", p);
-            request.setAttribute("message", "Thêm sản phẩm vào giỏ hàng thành công");
+               session.setAttribute("message", "Thêm sản phẩm vào giỏ hàng thành công");
             session.setAttribute("cart", cart);
-            request.getRequestDispatcher("product-detail.jsp").forward(request, response);
+            response.sendRedirect("getProductDetail?id=" + id);
 
         } catch (Exception e) {
             System.out.println("=============> Loi AdditemServlet <===============");

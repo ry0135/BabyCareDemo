@@ -121,7 +121,7 @@
                     <td>${b.customerID}</td>
 
                     <td>${b.name}</td>
-<!--                    <td>${b.serviceName}</td>-->
+<!--                 <td>${b.serviceName}</td>-->
                     <td>${b.bankName}</td>
                     <td>${b.accountName}</td>
                     <td>${b.accountNumber}</td>
@@ -135,7 +135,7 @@
                                 Đang xử lý ...
                             </c:when>
                             <c:when test="${b.refundStatus == 2}">
-                                Đã hoan tien
+                                Đã hoàn tiền
                             </c:when>
                             
                         </c:choose>
