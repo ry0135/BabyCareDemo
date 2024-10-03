@@ -33,6 +33,7 @@ public class LoginServlet extends HttpServlet {
         System.out.println(username + " " + password);
         User user = (User) AuthenticationRepository.Verify(username, password);
         System.out.println(user);
+       
 
         if (user != null) {
             if (AuthenticationRepository.getStatusAcc(username) == 0) {

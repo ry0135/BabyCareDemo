@@ -1,5 +1,6 @@
 package controller;
 
+import entity.Brand;
 import entity.User;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
+import repository1.OrderRepository;
+import repository1.ProductRepository;
 import repository1.UserRepository;
 import service.MyRandom;
 
@@ -35,8 +38,9 @@ public class AddBrandServlet extends HttpServlet {
             response.sendRedirect("login.jsp");
             return;
         }
-
-        String userID = user.getUserId();
+         String userID = user.getUserId();
+         Brand brand = ProductRepository.getBrandByCTVId(userID);
+        request.setAttribute("brand", brand);
         boolean hasPending = UserRepository.hasPendingRegistration(userID);
         System.out.println(hasPending);
         request.setAttribute("hasPending", hasPending);
@@ -63,47 +67,47 @@ public class AddBrandServlet extends HttpServlet {
         System.out.println(brandName);
         String brandDescription = request.getParameter("brandDescription");
         System.out.println(brandDescription);
-        Part part = request.getPart("logo");
-        logger.info("part: " + part);
+//        Part part = request.getPart("logo");
+//        logger.info("part: " + part);
+//
+//        if (part == null || part.getSize() == 0) {
+//            logger.warning("Part 'logo' is missing or empty.");
+//            request.setAttribute("thongbao", "Vui lòng chọn hình ảnh sản phẩm.");
+//            request.getRequestDispatcher("registerctv.jsp").forward(request, response);
+//            return;
+//        }
 
-        if (part == null || part.getSize() == 0) {
-            logger.warning("Part 'logo' is missing or empty.");
-            request.setAttribute("thongbao", "Vui lòng chọn hình ảnh sản phẩm.");
-            request.getRequestDispatcher("registerctv.jsp").forward(request, response);
-            return;
-        }
-
-        String filename = part.getSubmittedFileName();
-        logger.info("filename: " + filename);
-        String logo = filename; // Lưu trữ tên file ảnh vào biến logo
-
-        // Tạo thư mục nếu chưa tồn tại
-        File absoluteDir = new File("D:\\FPT_VNI\\Semester 5\\BabyCare\\BabyCare4\\web\\img\\brand");
-        if (!absoluteDir.exists()) {
-            absoluteDir.mkdirs();
-        }
-
-        File relativeDir = new File(getServletContext().getRealPath("/") + "img" + File.separator + "brand");
-        if (!relativeDir.exists()) {
-            relativeDir.mkdirs();
-        }
-
-        if (filename != null && !filename.isEmpty()) {
-            String absolutePath = "D:\\FPT_VNI\\Semester 5\\BabyCare\\BabyCare4\\web\\img\\brand" + File.separator + filename;
-            String relativePath = getServletContext().getRealPath("/") + "img" + File.separator + "brand" + File.separator + filename;
-
-            // Lưu file vào cả hai vị trí
-            try (InputStream is = part.getInputStream()) {
-                boolean success1 = uploadFile(is, absolutePath);
-                boolean success2 = uploadFile(is, relativePath);
-                if (success1 && success2) {
-                    logger.info("Uploaded file successfully to both locations: " + filename);
-                } else {
-                    logger.warning("Failed to upload file to one or both locations: " + filename);
-                }
-            }
-        }
-
+//        String filename = part.getSubmittedFileName();
+//        logger.info("filename: " + filename);
+//        String logo = filename; // Lưu trữ tên file ảnh vào biến logo
+//
+//        // Tạo thư mục nếu chưa tồn tại
+//        File absoluteDir = new File("D:\\FPT_VNI\\Semester 5\\BabyCare\\BabyCare4\\web\\img\\brand");
+//        if (!absoluteDir.exists()) {
+//            absoluteDir.mkdirs();
+//        }
+//
+//        File relativeDir = new File(getServletContext().getRealPath("/") + "img" + File.separator + "brand");
+//        if (!relativeDir.exists()) {
+//            relativeDir.mkdirs();
+//        }
+//
+//        if (filename != null && !filename.isEmpty()) {
+//            String absolutePath = "D:\\FPT_VNI\\Semester 5\\BabyCare\\BabyCare4\\web\\img\\brand" + File.separator + filename;
+//            String relativePath = getServletContext().getRealPath("/") + "img" + File.separator + "brand" + File.separator + filename;
+//
+//            // Lưu file vào cả hai vị trí
+//            try (InputStream is = part.getInputStream()) {
+//                boolean success1 = uploadFile(is, absolutePath);
+//                boolean success2 = uploadFile(is, relativePath);
+//                if (success1 && success2) {
+//                    logger.info("Uploaded file successfully to both locations: " + filename);
+//                } else {
+//                    logger.warning("Failed to upload file to one or both locations: " + filename);
+//                }
+//            }
+//        }
+         String newAddress = request.getParameter("newAddress");
         String brandAddress = request.getParameter("brandAddress");
         logger.info("Parameters: brandName=" + brandName + ", brandDescription=" + brandDescription + ", brandAddress=" + brandAddress);
 
@@ -114,8 +118,15 @@ public class AddBrandServlet extends HttpServlet {
             } else {
                 String brandID = MyRandom.getRandomBrandID();
 
-                logger.info("Registering Brand: " + brandID + " " + brandName + " " + brandDescription + " " + logo + " " + brandAddress);
-                boolean added = UserRepository.addBrand(brandID, brandName, brandDescription, logo, brandAddress, userID,bankName,accountNumber);
+                logger.info("Registering Brand: " + brandID + " " + brandName + " "  + brandAddress);
+                
+                 if (newAddress != null && !newAddress.isEmpty()) {
+                        boolean added = UserRepository.addBrand(brandID, brandName, newAddress, userID,bankName,accountNumber);
+                    } else {
+                     boolean added = UserRepository.addBrand(brandID, brandName, user.getAddress(), userID,bankName,accountNumber);
+                      
+                    }
+                boolean added = UserRepository.addBrand(brandID, brandName, brandAddress, userID,bankName,accountNumber);
                 request.setAttribute("thongbao", "Chúng tôi đã tiếp nhận thông tin của bạn. Chúng tôi sẽ thông báo qua email của bạn trong vòng 7 ngày..");
                 if (added == false) {
                     request.setAttribute("thongbao", "Có lỗi xảy ra khi đăng kí cửa hàng. Vui lòng thử lại.");

@@ -137,7 +137,7 @@ public static void addProduct(String productID, String productName, String categ
     public static ArrayList<Product> getListProductByCTVID(String CTVID) {
         ArrayList<Product> listProduct = new ArrayList<>();
         try {
-            // Tạo truy vấn SQL để lấy danh sách sản phẩm dựa trên CTVID
+          
             String query = "SELECT * FROM tblProduct WHERE CTVID = ?";
             Connection con = DBConnect.getConnection();
             PreparedStatement stmt = con.prepareStatement(query);
@@ -320,6 +320,7 @@ public static void addProduct(String productID, String productName, String categ
             System.out.println("Error in checkExistProductID(String productID)");
             e.printStackTrace();
         }
+        
         return false;
     }
 
@@ -687,7 +688,8 @@ public static void addProduct(String productID, String productName, String categ
             stmt.setString(9,product.getProductId());
             stmt.executeUpdate();
 
-        } catch (Exception e) {
+        }  
+        catch (Exception e) {
             System.out.println("loi addFood(Product product)");
             e.printStackTrace();
             return false;
@@ -718,7 +720,7 @@ public static void addProduct(String productID, String productName, String categ
     public static ArrayList<Product> getListProductByCID(int CategoryID) {
         ArrayList<Product> listProduct = new ArrayList<Product>();
         try {
-            String query = "select * from tblProduct where CategoryID = ?";
+            String query = "select * from tblProduct where Catego ryID = ?";
             Connection con = DBConnect.getConnection();
             PreparedStatement stmt = con.prepareStatement(query);
             stmt.setInt(1, CategoryID); // Đặt giá trị cho tham số CategoryID

@@ -4,8 +4,8 @@ public class Employee extends User{
     public Employee() {
     }
 
-    public Employee(String userId, String firstname, String lastname, String address,String avatar, String phone,int role) {
-        super(userId, firstname, lastname, address, avatar , phone,role);
+    public Employee(String userId, String firstname, String lastname, String address,String avatar, String phone,String email,int role) {
+        super(userId, firstname, lastname, address, avatar , phone,email,role);
     }
 
     @Override

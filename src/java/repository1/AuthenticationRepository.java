@@ -24,18 +24,19 @@ public class AuthenticationRepository {
             String address = rs.getString("Address");
             String avatar = rs.getString("Avatar");
             String phone = rs.getString("Phone");
+            String email = rs.getString("Email");
             int role = rs.getInt("Role");
             con.close();
 
             switch (role) {
                 case 1: // Admin
-                    return new Admin(userID, firstname, lastname, address, avatar, phone,role);
+                    return new Admin(userID, firstname, lastname, address, avatar, phone,email,role);
                 case 2: // Employee
-                    return new Employee(userID, firstname, lastname, address, avatar, phone,role);
+                    return new Employee(userID, firstname, lastname, address, avatar, phone,email,role);
                 case 3: // Customer
-                    return new Customer(userID, firstname, lastname, address, avatar, phone,role);
+                    return new Customer(userID, firstname, lastname, address, avatar, phone,email,role);
                 case 4: // CTV
-                    return new CTV(userID, firstname, lastname, address, avatar, phone,role);
+                    return new CTV(userID, firstname, lastname, address, avatar, phone,email, role);
                 default:
                     return null;
             }

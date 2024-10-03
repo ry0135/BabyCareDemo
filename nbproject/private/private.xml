@@ -3,41 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/web/updateBooking.jsp</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/repository1/ServiceRespository.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/controller/ListCustomerIDRefundServlet.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/config/DBConnect.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/repository1/TransactionRepository.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/controller/StatusCustomerRefundServlet.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/controller/FetchCategoriesServlet.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/web/include/orderRefund-form.jsp</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/repository1/UserRepository.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/entity/Booking.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/web/vnPayOrder.jsp</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/controller/WithDrawServlet.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/web/product-list-manager.jsp</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/web/include/register-ctv-form.jsp</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/controller/ListBookingCustomerIDServlet.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/repository1/OrderRepository.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/config/Config.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/controller/FeedBackServlet.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/controller/BookingServlet.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/controller/VnPayReturn.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/web/include/list-Customer-Refund-form.jsp</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/controller/AddProductServlet.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/web/include/list-CustomerID-Refund-from.jsp</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/web/include/feedback-form.jsp</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/controller/ListCustomerRefundServlet.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/controller/SucscessfullOrderServlet.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/controller/HomeIndexServlet.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/controller/UpdateBookingServlet.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/web/booking-service.jsp</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/controller/AcceptOrderServlet.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/web/include/product-list-manager-form.jsp</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/config/ConfigVnPayOrder.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/src/java/controller/CustomerRefundServlet.java</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/web/include/updateBooking-form.jsp</file>
-            <file>file:/D:/FPT_VNI/Semester%205/BabyCare/BabyCare4/web/include/header.jsp</file>
+            <file>file:/D:/TestBaby/BabyCare4/web/include/register-ctv-form.jsp</file>
+            <file>file:/D:/TestBaby/BabyCare4/src/java/entity/User.java</file>
+            <file>file:/D:/TestBaby/BabyCare4/src/java/controller/LoginServlet.java</file>
+            <file>file:/D:/TestBaby/BabyCare4/src/java/config/Config.java</file>
+            <file>file:/D:/TestBaby/BabyCare4/src/java/config/DBConnect.java</file>
+            <file>file:/D:/TestBaby/BabyCare4/src/java/repository1/OrderRepository.java</file>
+            <file>file:/D:/TestBaby/BabyCare4/web/registerctv.jsp</file>
+            <file>file:/D:/TestBaby/BabyCare4/web/addBrand/changeAddressBrand.jsp</file>
+            <file>file:/D:/TestBaby/BabyCare4/src/java/repository1/ProductRepository.java</file>
         </group>
     </open-files>
 </project-private>

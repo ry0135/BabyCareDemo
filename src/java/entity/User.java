@@ -1,7 +1,7 @@
 package entity;
 
 public class User {
-    protected String userId ,firstname, lastname,address,avatar,phone;
+    protected String userId ,firstname, lastname,address,avatar,phone,email;
     protected int role;
 
 
@@ -28,6 +28,18 @@ public class User {
         this.phone = phone;
         this.role = role;
     }
+
+    public User(String userId, String firstname, String lastname, String address, String avatar, String phone, String email, int role) {
+        this.userId = userId;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.address = address;
+        this.avatar = avatar;
+        this.phone = phone;
+        this.email = email;
+        this.role = role;
+    }
+    
     
 
     public int getRole() {
@@ -87,11 +99,21 @@ public class User {
         this.phone = phone;
     }
 
-    @Override
-    public String toString() {
-        return "User{" + "userId=" + userId + ", firstname=" + firstname + ", lastname=" + lastname + ", address=" + address + ", avatar=" + avatar + ", phone=" + phone + ", role=" + role + '}';
+    public String getEmail() {
+        return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
+
+    @Override
+    public String toString() {
+        return "User{" + "userId=" + userId + ", firstname=" + firstname + ", lastname=" + lastname + ", address=" + address + ", avatar=" + avatar + ", phone=" + phone + ", email=" + email + ", role=" + role + '}';
+    }
+
+    
     
    
 }

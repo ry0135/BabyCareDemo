@@ -406,7 +406,7 @@
                                                     <label for="newAddress">Địa chỉ mới:</label>
                                                     <input type="text" id="newAddress" name="newAddress">
                                                 </div>
-                                            </div>
+                                        </div>
                                         <div class="cart-btn">
                                             <button type="submit">Đặt hàng</button>
                                         </div>

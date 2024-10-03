@@ -1,8 +1,4 @@
-<%-- 
-    Document   : header
-    Created on : May 14, 2024, 2:43:43 PM
-    Author     : ADMIN
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -220,8 +216,7 @@
                                         </c:if>
 
                                         <c:if test="${sessionScope.user.role  == 3}">
-                                            <a href="ListBookingCustomerIDServlet" class="dropdown-item">Quản lí dich vụ</a>
-                                            <a href="getorderhistory" class="dropdown-item">Lịch sử đặt hàng dịch vụ</a>
+                                            <a href="ListBookingCustomerIDServlet" class="dropdown-item">Lịch sử đặt hàng dịch vụ</a>   
                                             <a href="getorderhistoryservlet" class="dropdown-item">Lịch sử đặt hàng</a> 
                                         </c:if>
 

@@ -3,9 +3,9 @@ package entity;
 public class Customer extends User{
     public Customer() {
     }
-
-    public Customer(String userId, String firstname, String lastname, String address,String avatar, String phone, int role) {
-        super(userId, firstname, lastname, address, avatar,  phone, role);
+    
+    public Customer(String userId, String firstname, String lastname, String address,String avatar, String phone,String email, int role) {
+        super(userId, firstname, lastname, address, avatar,  phone, email, role);
     }
 
     @Override
@@ -17,6 +17,7 @@ public class Customer extends User{
                 ", address='" + address + '\'' +
                 ", avatar='" + avatar + '\'' +
                 ", phone='" + phone + '\'' +
+                ", email ='" + email + '\'' +
                 ", role='" + role + '\'' +
                 '}';
     }

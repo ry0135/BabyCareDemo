@@ -1,8 +1,3 @@
-<%-- 
-    Document   : index
-    Created on : May 14, 2024, 1:37:19 AM
-    Author     : ADMIN
---%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
   <style>
@@ -17,7 +12,6 @@
             font-size: 1.5rem;
             font-weight: bold;
             color: #333;
-        }
 
         .card-text {
             color: #666;

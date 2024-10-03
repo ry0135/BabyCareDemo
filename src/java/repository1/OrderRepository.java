@@ -1068,7 +1068,7 @@ public class OrderRepository {
         ArrayList<OrderAccept> listOrder = new ArrayList<>();
         try {
             Connection con = DBConnect.getConnection();
-            String query = "SELECT * FROM tblBill WHERE CTVID = ? AND StatusBill LIKE N'Đang%' ORDER BY DateCreate";
+            String query = "SELECT * FROM tblBill WHERE CTVID = ?  AND StatusBill=N'Đang xử lý-COD' ORDER BY DateCreate";
             PreparedStatement stmt = con.prepareStatement(query);
             stmt.setString(1, ctvId);
             ResultSet rs = stmt.executeQuery();

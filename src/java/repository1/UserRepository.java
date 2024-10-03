@@ -407,6 +407,37 @@ public class UserRepository {
             throw new RuntimeException(e);
         }
     }
+     private static void sendCodePassToEmail(String email, String code) {
+        final String username = "phuongnam121103@gmail.com"; // Thay bằng email của bạn
+        final String password = "eqna xeml exop mnzc"; // Thay bằng mật khẩu email của bạn
+
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+
+        Session session = Session.getInstance(props,
+                new javax.mail.Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(username));
+            message.setRecipients(Message.RecipientType.TO,
+                    InternetAddress.parse(email));
+            message.setSubject("Mật khẩu mới"); // Set subject
+            message.setContent("Mật khẩu mới của bạn là : " + code, "text/plain; charset=UTF-8"); // Set content with UTF-8 encoding
+            Transport.send(message);
+            System.out.println("Đã gửi mã thành công.");
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 //    public static void sendCodeToEmailSuccsessOrder(String email, String orderiD, String name) {
 //        final String username = "phuongnam121103@gmail.com"; // Thay bằng email của bạn
@@ -601,7 +632,7 @@ public class UserRepository {
         try {
             String verificationCode = generateRandomCode(); // Generate random verification code
             // Send verification code to the user's email
-            sendCodeToEmail(userEmail, verificationCode);
+            sendCodePassToEmail(userEmail, verificationCode);
 
             // Update the password with the verification code
             boolean updated = UserRepository.updatePassword(userEmail, verificationCode);
@@ -776,15 +807,43 @@ public class UserRepository {
 
     private static final Logger logger = Logger.getLogger(UserRepository.class.getName());
 
-    public static boolean addBrand(String brandID, String brandName, String brandDescription, String logo, String brandAddress,String userID,String bankName, String acountNumber) throws SQLException, ClassNotFoundException {
+//    public static boolean addBrand(String brandID, String brandName, String brandDescription, String logo, String brandAddress,String userID,String bankName, String acountNumber) throws SQLException, ClassNotFoundException {
+//        boolean result = false;
+//        String query = "INSERT INTO tblBrand (BrandID, BrandName, BrandDescription, BrandLogo, BrandAddress, CTVID, BankName, AcountNumber , Status) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)";
+//        try (Connection con = DBConnect.getConnection();
+//                PreparedStatement ps = con.prepareStatement(query)) {
+//            ps.setString(1, brandID);
+//            ps.setString(2, brandName);
+//            ps.setString(3, brandDescription);
+//            ps.setString(4, logo);
+//            ps.setString(5, brandAddress);
+//            ps.setString(6, userID);
+//            ps.setString(7, bankName);
+//            ps.setString(8, acountNumber);
+//            ps.setInt(9, 0);
+//
+//            logger.info("Executing query: " + ps.toString());
+//
+//            result = ps.executeUpdate() > 0;
+//            if (result) {
+//                logger.info("Brand added successfully.");
+//            } else {
+//                logger.warning("Failed to add brand.");
+//            }
+//        } catch (SQLException e) {
+//            logger.log(Level.SEVERE, "Error adding brand", e);
+//        }
+//        return result;
+//    }
+    public static boolean addBrand(String brandID, String brandName, String brandAddress,String userID,String bankName, String acountNumber) throws SQLException, ClassNotFoundException {
         boolean result = false;
         String query = "INSERT INTO tblBrand (BrandID, BrandName, BrandDescription, BrandLogo, BrandAddress, CTVID, BankName, AcountNumber , Status) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)";
         try (Connection con = DBConnect.getConnection();
                 PreparedStatement ps = con.prepareStatement(query)) {
             ps.setString(1, brandID);
             ps.setString(2, brandName);
-            ps.setString(3, brandDescription);
-            ps.setString(4, logo);
+            ps.setString(3, "");
+            ps.setString(4, "avatar.png");
             ps.setString(5, brandAddress);
             ps.setString(6, userID);
             ps.setString(7, bankName);
@@ -804,6 +863,34 @@ public class UserRepository {
         }
         return result;
     }
+    public static Brand getBrandByCTVID(String ctvID) throws SQLException, ClassNotFoundException {
+    Brand brand = null;
+    String query = "SELECT BrandID, BrandName, BrandDescription, BrandLogo, BrandAddress, BankName, AcountNumber, Status FROM tblBrand WHERE CTVID = ?";
+    
+    try (Connection con = DBConnect.getConnection();
+         PreparedStatement ps = con.prepareStatement(query)) {
+        ps.setString(1, ctvID);
+
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                // Khởi tạo đối tượng Brand từ kết quả truy vấn
+                brand = new Brand();
+                brand.setBrandID(rs.getString("BrandID"));
+                brand.setBrandName(rs.getString("BrandName"));
+                brand.setBrandDescription(rs.getString("BrandDescription"));
+                brand.setBrandLogo(rs.getString("BrandLogo"));
+                brand.setBrandAddess(rs.getString("BrandAddress"));
+                brand.setBankName(rs.getString("BankName"));
+                brand.setAccountNumber(rs.getString("AcountNumber"));
+                brand.setStatus(rs.getInt("Status"));
+            }
+        }
+    } catch (SQLException e) {
+        logger.log(Level.SEVERE, "Error fetching brand by CTVID", e);
+        throw e;  // Ném lại ngoại lệ nếu cần xử lý ở mức cao hơn
+    }
+    return brand;
+}
 
     public static boolean deleteBrandByCTVID(String ctvID) throws SQLException, ClassNotFoundException {
         boolean result = false;
@@ -844,7 +931,7 @@ public class UserRepository {
     public static boolean hasPendingRegistration(String userId) {
         boolean hasPending = false;
         try {
-            String query = "SELECT Status FROM tblBrand WHERE CTVID = ? AND Status = 0";
+            String query = "SELECT Status FROM tblBrand WHERE CTVID = ? AND Status = 1";
             Connection con = DBConnect.getConnection();
             PreparedStatement stmt = con.prepareStatement(query);
             stmt.setString(1, userId);

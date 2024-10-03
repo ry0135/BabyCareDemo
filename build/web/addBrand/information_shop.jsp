@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <c:if test="${hasPending}">
     <h3 class="text-danger">Chúng tôi đã tiếp nhận thông tin của bạn. Chúng tôi sẽ thông báo qua email của bạn trong vòng 7 ngày.</h3>
 </c:if>
@@ -146,8 +147,10 @@
 
 
 
+
+
+
 <style>
-   
     body {
         font-family: Arial, sans-serif;
         background-color: #f5f5f5;
