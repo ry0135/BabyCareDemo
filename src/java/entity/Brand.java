@@ -9,7 +9,12 @@ public class Brand {
     private String brandAddess;
     private String CTVID;
     private String bankName;
-    private String AccountNumber;
+    private String accountNumber;
+    private String identifiNumber;
+    private String identifiImg;
+    private String identifiImgFace;
+
+
     private int Status;
     
     
@@ -35,7 +40,7 @@ public class Brand {
         this.Status = Status;
     }
 
-    public Brand(String brandID, String brandName, String brandDescription, String brandLogo, String brandAddess, String CTVID, String bankName, String AccountNumber, int Status) {
+    public Brand(String brandID, String brandName, String brandDescription, String brandLogo, String brandAddess, String CTVID, String bankName, String accountNumber, int Status) {
         this.brandID = brandID;
         this.brandName = brandName;
         this.brandDescription = brandDescription;
@@ -43,9 +48,50 @@ public class Brand {
         this.brandAddess = brandAddess;
         this.CTVID = CTVID;
         this.bankName = bankName;
-        this.AccountNumber = AccountNumber;
+        this.accountNumber = accountNumber;
         this.Status = Status;
     }
+
+    public Brand(String brandID, String brandName, String brandDescription, String brandLogo, String brandAddess, String CTVID, String bankName, String accountNumber, String identifiNumber, String identifiImg, String identifiImgFace, int Status) {
+        this.brandID = brandID;
+        this.brandName = brandName;
+        this.brandDescription = brandDescription;
+        this.brandLogo = brandLogo;
+        this.brandAddess = brandAddess;
+        this.CTVID = CTVID;
+        this.bankName = bankName;
+        this.accountNumber = accountNumber;
+        this.identifiNumber = identifiNumber;
+        this.identifiImg = identifiImg;
+        this.identifiImgFace = identifiImgFace;
+        this.Status = Status;
+    }
+
+    public String getIdentifiNumber() {
+        return identifiNumber;
+    }
+
+    public void setIdentifiNumber(String identifiNumber) {
+        this.identifiNumber = identifiNumber;
+    }
+
+    public String getIdentifiImg() {
+        return identifiImg;
+    }
+
+    public void setIdentifiImg(String identifiImg) {
+        this.identifiImg = identifiImg;
+    }
+
+    public String getIdentifiImgFace() {
+        return identifiImgFace;
+    }
+
+    public void setIdentifiImgFace(String identifiImgFace) {
+        this.identifiImgFace = identifiImgFace;
+    }
+    
+    
 
     public String getBankName() {
         return bankName;
@@ -56,12 +102,14 @@ public class Brand {
     }
 
     public String getAccountNumber() {
-        return AccountNumber;
+        return accountNumber;
     }
 
-    public void setAccountNumber(String AccountNumber) {
-        this.AccountNumber = AccountNumber;
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
+
+    
     
     
     public int getStatus() {
@@ -125,9 +173,12 @@ public class Brand {
 
     @Override
     public String toString() {
-        return "Brand{" + "brandID=" + brandID + ", brandName=" + brandName + ", brandDescription=" + brandDescription + ", brandLogo=" + brandLogo + ", brandAddess=" + brandAddess + ", CTVID=" + CTVID + ", bankName=" + bankName + ", AccountNumber=" + AccountNumber + ", Status=" + Status + '}';
+        return "Brand{" + "brandID=" + brandID + ", brandName=" + brandName + ", brandDescription=" + brandDescription + ", brandLogo=" + brandLogo + ", brandAddess=" + brandAddess + ", CTVID=" + CTVID + ", bankName=" + bankName + ", accountNumber=" + accountNumber + ", Status=" + Status + '}';
     }
+    
+         
 
+   
    
     
 

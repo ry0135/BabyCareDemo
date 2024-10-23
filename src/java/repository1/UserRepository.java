@@ -803,7 +803,37 @@ public class UserRepository {
         return false;
     }
 
+   public static boolean checkBrandNameExist(String brandName, String brandId) {
+    try {
+        Connection con = DBConnect.getConnection();
+        // Câu lệnh SQL để kiểm tra tên thương hiệu có tồn tại hay không, ngoại trừ thương hiệu hiện tại
+        PreparedStatement stmt = con.prepareStatement("SELECT * FROM tblBrand WHERE BrandName = ? AND BrandID <> ?");
+        stmt.setString(1, brandName);
+        stmt.setString(2, brandId); // Sử dụng brandId để loại trừ thương hiệu hiện tại
+        ResultSet resultSet = stmt.executeQuery();
+        return resultSet.next(); // Trả về true nếu có ít nhất một kết quả
+    } catch (Exception e) {
+        System.out.println("Lỗi checkBrandNameExist(String brandName, int brandId)");
+        e.printStackTrace();
+    }
+    return false; // Mặc định trả về false nếu có lỗi
+}
    
+   public static boolean checkIdentifiNumberExist(String identifiNumber) {
+    try {
+        Connection con = DBConnect.getConnection();
+        // Câu lệnh SQL để kiểm tra tên thương hiệu có tồn tại hay không, ngoại trừ thương hiệu hiện tại
+        PreparedStatement stmt = con.prepareStatement("SELECT * FROM tblBrand WHERE IdentifiNumber = ?");
+        stmt.setString(1, identifiNumber);
+        ResultSet resultSet = stmt.executeQuery();
+        return resultSet.next(); // Trả về true nếu có ít nhất một kết quả
+    } catch (Exception e) {
+        System.out.println("Lỗi checkIdentifiNumberExist(String identifiNumber)");
+        e.printStackTrace();
+    }
+    return false; // Mặc định trả về false nếu có lỗi
+}
+
 
     private static final Logger logger = Logger.getLogger(UserRepository.class.getName());
 
@@ -863,6 +893,60 @@ public class UserRepository {
         }
         return result;
     }
+    public static boolean updateBrand(String brandID, String brandName, String brandAddress, String bankName, String accountNumber) throws SQLException, ClassNotFoundException {
+    boolean result = false;
+    String query = "UPDATE tblBrand SET BrandName = ?, BrandAddress = ?, BankName = ?, AcountNumber = ? WHERE BrandID = ?";
+    
+    try (Connection con = DBConnect.getConnection();
+            PreparedStatement ps = con.prepareStatement(query)) {
+        ps.setString(1, brandName);
+        ps.setString(2, brandAddress);
+        ps.setString(3, bankName);
+        ps.setString(4, accountNumber);
+        ps.setString(5, brandID);
+
+        logger.info("Executing query: " + ps.toString());
+
+        result = ps.executeUpdate() > 0;
+        if (result) {
+            logger.info("Brand updated successfully.");
+        } else {
+            logger.warning("Failed to update brand.");
+        }
+    } catch (SQLException e) {
+        logger.log(Level.SEVERE, "Error updating brand", e);
+    }
+    
+    return result;
+    }
+    
+    public static boolean updateBrandIdentifiNumber(String brandID, String IdentifiNumber, String img_Identifi, String img_IdentifiFace) throws SQLException, ClassNotFoundException {
+    boolean result = false;
+    String query = "UPDATE tblBrand SET IdentifiNumber = ?, IdentifiImg = ?, IdentifiImgFace = ?, Status = ?  WHERE BrandID = ?";
+    
+    try (Connection con = DBConnect.getConnection();
+            PreparedStatement ps = con.prepareStatement(query)) {
+        ps.setString(1, IdentifiNumber);
+        ps.setString(2, img_Identifi);
+        ps.setString(3, img_IdentifiFace);
+        ps.setInt(4, 1);
+
+        ps.setString(5, brandID);
+        logger.info("Executing query: " + ps.toString());
+
+        result = ps.executeUpdate() > 0;
+        if (result) {
+            logger.info("Brand updated successfully.");
+        } else {
+            logger.warning("Failed to update brand.");
+        }
+    } catch (SQLException e) {
+        logger.log(Level.SEVERE, "Error updating brand", e);
+    }
+    
+    return result;
+}
+
     public static Brand getBrandByCTVID(String ctvID) throws SQLException, ClassNotFoundException {
     Brand brand = null;
     String query = "SELECT BrandID, BrandName, BrandDescription, BrandLogo, BrandAddress, BankName, AcountNumber, Status FROM tblBrand WHERE CTVID = ?";
@@ -1228,37 +1312,58 @@ public class UserRepository {
 //            System.out.println("Update thành công!");
 //        } else {
 //            System.out.println("Update không thành công!");
+//    }        
+//String brandID = "B1131"; // Giả định một BrandID có trong database
+//        String identifiNumber = "123456789"; // Giả định số CCCD hoặc CMND
+//        String img_Identifi = "img_CCCD.png"; // Giả định tên file ảnh CCCD đã upload
+//        String img_IdentifiFace = "img_CCCD_Face.png"; // Giả định tên file ảnh khuôn mặt đã upload
+//
+//        // Gọi phương thức updateBrandIdentifiNumber để kiểm tra
+//        try {
+//            boolean result = UserRepository.updateBrandIdentifiNumber(brandID, identifiNumber, img_Identifi, img_IdentifiFace);
+//            
+//            if (result) {
+//                logger.info("Brand updated successfully.");
+//            } else {
+//                logger.warning("Failed to update brand.");
+//            }
+//        } catch (ClassNotFoundException e) {
+//            logger.log(Level.SEVERE, "Error occurred during brand update", e);
 //        }
-
     }
+}
 
-public static void sendDCodeToEmail(String email, String code) {
-    final String fromEmail = "your_email@gmail.com"; // Change this to your email
-    final String password = "your_password"; // Change this to your password
-
-    Properties props = new Properties();
-    props.put("mail.smtp.auth", "true");
-    props.put("mail.smtp.starttls.enable", "true");
-    props.put("mail.smtp.host", "smtp.gmail.com");
-    props.put("mail.smtp.port", "587");
-
-    Session session = Session.getInstance(props, new javax.mail.Authenticator() {
-        protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication(fromEmail, password);
-        }
-    });
     
 
-    try {
-        MimeMessage message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(fromEmail));
-        message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-        message.setSubject("Your Discount Code");
-        message.setText("Here is your discount code: " + code);
-        Transport.send(message);
-        System.out.println("Email sent successfully.");
-    } catch (MessagingException e) {
-        e.printStackTrace();
-    }
-}
-}
+//public static void sendDCodeToEmail(String email, String code) {
+//    final String fromEmail = "your_email@gmail.com"; // Change this to your email
+//    final String password = "your_password"; // Change this to your password
+//
+//    Properties props = new Properties();
+//    props.put("mail.smtp.auth", "true");
+//    props.put("mail.smtp.starttls.enable", "true");
+//    props.put("mail.smtp.host", "smtp.gmail.com");
+//    props.put("mail.smtp.port", "587");
+//
+//    Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+//        protected PasswordAuthentication getPasswordAuthentication() {
+//            return new PasswordAuthentication(fromEmail, password);
+//        }
+//    });
+//    
+//
+//    try {
+//        MimeMessage message = new MimeMessage(session);
+//        message.setFrom(new InternetAddress(fromEmail));
+//        message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+//        message.setSubject("Your Discount Code");
+//        message.setText("Here is your discount code: " + code);
+//        Transport.send(message);
+//        System.out.println("Email sent successfully.");
+//    } catch (MessagingException e) {
+//        e.printStackTrace();
+//    }
+//}
+    
+    
+

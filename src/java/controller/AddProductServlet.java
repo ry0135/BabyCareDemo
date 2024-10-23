@@ -84,7 +84,7 @@ public class AddProductServlet extends HttpServlet {
         if (!relativeDir.exists()) {
             relativeDir.mkdirs();
         }
-
+        
         if (filename != null && !filename.isEmpty()) {
             String absolutePath = "D:\\FPT_VNI\\Semester 5\\BabyCare\\BabyCare4\\web\\img" + File.separator + filename;
             String relativePath = getServletContext().getRealPath("/") + "img" + File.separator + filename;

@@ -3,14 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/TestBaby/BabyCare4/web/include/register-ctv-form.jsp</file>
-            <file>file:/D:/TestBaby/BabyCare4/src/java/entity/User.java</file>
-            <file>file:/D:/TestBaby/BabyCare4/src/java/controller/LoginServlet.java</file>
-            <file>file:/D:/TestBaby/BabyCare4/src/java/config/Config.java</file>
+            <file>file:/D:/TestBaby/BabyCare4/src/java/entity/Brand.java</file>
+            <file>file:/D:/TestBaby/BabyCare4/src/java/controller/ajaxServlet.java</file>
+            <file>file:/D:/TestBaby/BabyCare4/src/java/controller/AddBrandServlet.java</file>
+            <file>file:/D:/TestBaby/BabyCare4/web/addBrand/information_definition.jsp</file>
             <file>file:/D:/TestBaby/BabyCare4/src/java/config/DBConnect.java</file>
-            <file>file:/D:/TestBaby/BabyCare4/src/java/repository1/OrderRepository.java</file>
-            <file>file:/D:/TestBaby/BabyCare4/web/registerctv.jsp</file>
-            <file>file:/D:/TestBaby/BabyCare4/web/addBrand/changeAddressBrand.jsp</file>
+            <file>file:/D:/TestBaby/BabyCare4/src/java/repository1/UserRepository.java</file>
+            <file>file:/D:/TestBaby/BabyCare4/src/java/controller/AddBrandIndentifiServlet.java</file>
+            <file>file:/D:/TestBaby/BabyCare4/web/addBrand/information_shop.jsp</file>
             <file>file:/D:/TestBaby/BabyCare4/src/java/repository1/ProductRepository.java</file>
         </group>
     </open-files>

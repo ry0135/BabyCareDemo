@@ -34,7 +34,7 @@ public class PreferentialShowServlet extends HttpServlet {
         try {
             String discountCode = PreferentialRepository.getDiscountCode(preferentialId);
             if (discountCode != null) {
-                UserRepository.sendDCodeToEmail(userEmail, discountCode);  // Assuming this method exists and is correctly implemented
+//                UserRepository.sendDCodeToEmail(userEmail, discountCode);  // Assuming this method exists and is correctly implemented
                 request.setAttribute("message", "Discount code sent to your email: " + userEmail);
             } else {
                 request.setAttribute("message", "Error retrieving discount code.");

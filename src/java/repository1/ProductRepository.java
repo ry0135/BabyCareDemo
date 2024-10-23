@@ -365,10 +365,16 @@ public static void addProduct(String productID, String productName, String categ
                 String brandDescription = rs.getString("BrandDescription");
                 String brandLogo = rs.getString("BrandLogo");
                 String brandAddress = rs.getString("BrandAddress");
-                String brandCTVID = rs.getString("CTVID");
+                 String brandCTVID = rs.getString("CTVID");
+                String brandBank = rs.getString("BankName");
+                String brandAccountNumber = rs.getString("AcountNumber");
+                String identifiNumber = rs.getString("IdentifiNumber");
+                String identifiImg = rs.getString("IdentifiImg");
+                String identifiImgFace = rs.getString("IdentifiImgFace");
+
                 int status = rs.getInt("Status");
 
-                brand = new Brand(brandId, brandName, brandDescription, brandLogo, brandAddress, brandCTVID, status);
+                brand = new Brand(brandId, brandName, brandDescription, brandLogo, brandAddress,brandCTVID, brandBank, brandAccountNumber,identifiNumber,identifiImg,identifiImgFace, status);
             }
         } catch (Exception e) {
             System.err.println("Error in database method getBrandById class ProductRepository: " + e.getMessage());
@@ -908,10 +914,10 @@ public static boolean updateCategory(Category category) throws SQLException, Cla
 //            System.out.println(product);
 //        }
 //        String CTVID = "C3117"; 
-        ArrayList<Brand> brand = (ArrayList<Brand>) ProductRepository.getAllBrands();
-        for(Brand brands : brand){
-            System.out.println(brands);
-        }
+//        ArrayList<Brand> brand = (ArrayList<Brand>) ProductRepository.getAllBrands();
+//        for(Brand brands : brand){
+//            System.out.println(brands);
+//        }
 //        CommentProduct comment = new CommentProduct();
 //        comment.setCommentID("Cm124");
 //        comment.setProductID("P9003");
@@ -1021,8 +1027,28 @@ public static boolean updateCategory(Category category) throws SQLException, Cla
 //            System.out.println("Failed to update product.");
 //        }
 //    String testCTVID = "01797";  // Replace with a valid CTVID for testing
-//        int productCount = getCountProductByCTV(testCTVID);
+//        int productCount = ge(testCTVID);
 //        System.out.println("Number of products for CTVID " + testCTVID + ": " + productCount);
+//    
 
+String CTVID = "86564"; // Bạn thay giá trị này bằng CTVID thật trong CSDL
+
+        // Gọi phương thức getBrandByCTVId
+        Brand brand = getBrandByCTVId(CTVID);
+
+        // Kiểm tra kết quả
+        if (brand != null) {
+            System.out.println("Brand ID: " + brand.getBrandID());
+            System.out.println("Brand Name: " + brand.getBrandName());
+            System.out.println("Brand Description: " + brand.getBrandDescription());
+            System.out.println("Brand Logo: " + brand.getBrandLogo());
+            System.out.println("Brand Address: " + brand.getBrandAddess());
+            System.out.println("Bank Name: " + brand.getBankName());
+            System.out.println("Account Number: " + brand.getAccountNumber());
+            System.out.println("CTV ID: " + brand.getCTVID());
+            System.out.println("Status: " + brand.getStatus());
+        } else {
+            System.out.println("Brand not found for CTVID: " + CTVID);
+        }
     }
 }
